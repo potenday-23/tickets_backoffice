@@ -1,4 +1,4 @@
-package project.backend.domain.user.dto;
+package project.backend.domain.ticket.dto;
 
 import lombok.*;
 import project.backend.domain.user.entity.SocialType;
@@ -8,7 +8,6 @@ import project.backend.domain.user.entity.SocialType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor // todo : AllArgsConstructor는 무슨 뜻일까
-public class UserResponseDto {
-    public SocialType socialType;
+public class TicketResponseDto {
     public String socialId;
 }

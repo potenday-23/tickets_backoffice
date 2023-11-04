@@ -12,7 +12,7 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
 
-    // User
+    // Ticket
     USER_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다.")
     ;
 
