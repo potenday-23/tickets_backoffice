@@ -20,8 +20,19 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
 
-    public Ticket createTicket(TicketPostRequestDto ticketPostRequestDto){
-        Ticket ticket = Ticket.builder().socialId(ticketPostRequestDto.socialId).build();
+    public Ticket createTicket(TicketPostRequestDto ticketPostRequestDto) {
+        Ticket ticket = Ticket.builder()
+                .imageUrl(ticketPostRequestDto.imageUrl)
+                .ticketImageUrl(ticketPostRequestDto.ticketImageUrl)
+                .ticketDate(ticketPostRequestDto.ticketDate)
+                .rating(ticketPostRequestDto.rating)
+                .memo(ticketPostRequestDto.memo)
+                .seat(ticketPostRequestDto.seat)
+                .location(ticketPostRequestDto.location)
+                .price(ticketPostRequestDto.price)
+                .friend(ticketPostRequestDto.friend)
+                .isPrivate(ticketPostRequestDto.isPrivate)
+                .build();
         ticketRepository.save(ticket);
         return ticket;
     }

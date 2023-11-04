@@ -3,10 +3,11 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/skeleton
-    username: root
-    password: admin1234
+    url: ${TICKETS_DB_URL}
+    username: ${TICKETS_DB_USER}
+    password: ${TICKETS_DB_PW}
 
+  jpa:
   jpa:
     database: mysql
     show-sql: false
