@@ -38,12 +38,15 @@ dependencies {
 			'org.mapstruct:mapstruct-processor:1.4.2.Final'
 	)
 	// spring Security
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-//	testImplementation 'org.springframework.security:spring-security-test'
+	//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	//	testImplementation 'org.springframework.security:spring-security-test'
 
 	// mysql driver
 	implementation 'mysql:mysql-connector-java:8.0.33'
+
+	// Swagger
+	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 }
 
 tasks.named('test') {

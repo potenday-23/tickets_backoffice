@@ -9,7 +9,7 @@ import project.backend.domain.user.entity.SocialType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor // todo : AllArgsConstructor는 무슨 뜻일까
-public class UserUpdateRequestDto {
+public class UserPatchRequestDto {
     public SocialType socialType;
     public String socialId;
 }

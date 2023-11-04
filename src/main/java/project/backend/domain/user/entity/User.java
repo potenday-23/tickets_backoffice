@@ -5,8 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import project.backend.domain.common.entity.BaseEntity;
+import project.backend.domain.user.dto.UserPatchRequestDto;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -27,5 +29,12 @@ public class User extends BaseEntity {
     public User(SocialType socialType, String socialId){
         this.socialType = socialType;
         this.socialId = socialId;
+    }
+
+    // Patch
+    public User patchUser(UserPatchRequestDto userPatchRequestDto){
+        this.socialType = Optional.ofNullable(userPatchRequestDto.getSocialType()).orElse(this.socialType);
+        this.socialId = Optional.ofNullable(userPatchRequestDto.getSocialId()).orElse(this.socialId);
+        return this;
     }
 }

@@ -4,5 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum SocialType {
-    KAKAO, GOOGLE
+    KAKAO("kakao"),
+    APPLE("apple");
+
+    private final String status;
+
+    SocialType(String status) {
+        this.status = status;
+    }
+
 }
