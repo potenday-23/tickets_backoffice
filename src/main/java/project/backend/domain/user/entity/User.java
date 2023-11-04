@@ -5,9 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import project.backend.domain.common.entity.BaseEntity;
+import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.user.dto.UserPatchRequestDto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -25,6 +28,9 @@ public class User extends BaseEntity {
     @Column(name = "social_id")
     public String socialId;
 
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Ticket> tickets = new ArrayList<>();
+
     @Builder
     public User(SocialType socialType, String socialId){
         this.socialType = socialType;
@@ -37,4 +43,6 @@ public class User extends BaseEntity {
         this.socialId = Optional.ofNullable(userPatchRequestDto.getSocialId()).orElse(this.socialId);
         return this;
     }
+
+
 }

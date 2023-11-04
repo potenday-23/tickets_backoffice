@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import project.backend.domain.common.entity.BaseEntity;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
+import project.backend.domain.user.entity.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -49,6 +50,10 @@ public class Ticket extends BaseEntity {
     @Column(name = "isPrivate")
     public IsPrivate isPrivate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId")
+    private User user;
+
 
     @Builder
     public Ticket(String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Integer rating, String memo, String seat,
@@ -79,4 +84,16 @@ public class Ticket extends BaseEntity {
         this.isPrivate = Optional.ofNullable(ticketPatchRequestDto.getIsPrivate()).orElse(this.isPrivate);
         return this;
     }
+
+    // == 연관관계 매핑 == //
+    public void setUser(User user) {
+        if (this.user != null) {
+            if (this.user.getTickets().contains(this)) {
+                this.user.getTickets().remove(this);
+            }
+        }
+        this.user = Optional.ofNullable(user).orElse(this.user);
+        this.user.getTickets().add(this);
+    }
+
 }
