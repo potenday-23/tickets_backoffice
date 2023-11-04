@@ -8,7 +8,6 @@ spring:
     password: ${TICKETS_DB_PW}
 
   jpa:
-  jpa:
     database: mysql
     show-sql: false
     hibernate:
