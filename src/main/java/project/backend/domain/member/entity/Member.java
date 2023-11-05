@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import project.backend.domain.memberTicketLike.entity.MemberTicketLike;
 import project.backend.domain.common.entity.BaseEntity;
+import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 
@@ -43,6 +44,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     public List<MemberTicketLike> memberTicketLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    public List<OnboardingMemberCategory> onboardingMemberCategories = new ArrayList<>();
 
     @Builder
     public Member(SocialType socialType, String socialId, String nickname, String profileUrl, String refreshToken){

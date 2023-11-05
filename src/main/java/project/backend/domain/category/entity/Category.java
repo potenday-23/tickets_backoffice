@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import project.backend.domain.memberTicketLike.entity.MemberTicketLike;
+import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
 import project.backend.domain.ticket.entity.Ticket;
 
 import javax.persistence.*;
@@ -25,9 +27,13 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     public List<Ticket> tickets = new ArrayList<>();
 
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    public List<OnboardingMemberCategory> onboardingMemberCategories = new ArrayList<>();
+
     // == 생성자 == //
     @Builder
     public Category(String name) {
         this.name = name;
     }
+
 }
