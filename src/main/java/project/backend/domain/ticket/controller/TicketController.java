@@ -50,7 +50,7 @@ public class TicketController {
                     "    \"friend\" : \"김가영\",\n" +
                     "    \"isPrivate\" : \"PUBLIC\",\n" +
                     "    \"categoryName\" : \"기타\"\n" +
-                    "}" +
+                    "}\n" +
                     "1. ticketDate는 다음과 같은 형식으로 추가해주세요\n" +
                     "2. isPrivate는 PUBLIC, PRIVATE으로만 추가 가능합니다.\n" +
                     "3. rating은 별점으로, 0 ~ 5까지 소수점으로 입력할 수 있습니다.(n.5 권장)")
