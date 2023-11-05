@@ -55,8 +55,6 @@ public class Member extends BaseEntity {
 
     // Patch
     public Member patchMember(MemberPatchRequestDto memberPatchRequestDto){
-        this.socialType = Optional.ofNullable(memberPatchRequestDto.getSocialType()).orElse(this.socialType);
-        this.socialId = Optional.ofNullable(memberPatchRequestDto.getSocialId()).orElse(this.socialId);
         this.nickname = Optional.ofNullable(memberPatchRequestDto.getNickname()).orElse(this.nickname);
         this.profileUrl = Optional.ofNullable(memberPatchRequestDto.getProfileUrl()).orElse(this.profileUrl);
         this.refreshToken = Optional.ofNullable(memberPatchRequestDto.getRefreshToken()).orElse(this.refreshToken);

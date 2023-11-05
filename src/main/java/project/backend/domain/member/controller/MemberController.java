@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.backend.domain.jwt.service.JwtService;
 import project.backend.domain.member.dto.MemberPostRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
@@ -12,6 +13,7 @@ import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,6 +23,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberMapper memberMapper;
+    private final JwtService jwtService;
 
 
     @PostMapping
@@ -41,11 +44,12 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDtoList);
     }
 
-    @PatchMapping("/{memberId}")
-    public ResponseEntity putMember(
-            @PathVariable Long memberId,
-            @RequestBody MemberPatchRequestDto memberPatchRequestDto) {
-        MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(memberId, memberPatchRequestDto));
+    @PatchMapping
+    public ResponseEntity patchMember(
+            @RequestHeader("Authorization") String accessToken,
+            @Valid @RequestBody MemberPatchRequestDto memberPatchRequestDto) {
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+        MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), memberPatchRequestDto));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 

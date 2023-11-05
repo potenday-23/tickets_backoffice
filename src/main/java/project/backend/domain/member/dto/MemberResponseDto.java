@@ -9,6 +9,7 @@ import project.backend.domain.member.entity.SocialType;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
+    public Long id;
     public SocialType socialType;
     public String socialId;
     public String nickname;
