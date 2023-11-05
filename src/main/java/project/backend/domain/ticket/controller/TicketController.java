@@ -58,8 +58,12 @@ public class TicketController {
      * @return
      */
     @GetMapping
-    public ResponseEntity getTicketList() {
-        List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketService.getTicketList());
+    public ResponseEntity getTicketList(
+            @RequestParam(value = "categorys", required = false) List<String> categorys,
+            @RequestParam(value = "period", required = false) String period // 일주일, 한달, 6개월, 기간, 하루
+    ) {
+        List<Ticket> ticketList = ticketService.getTicketList(categorys);
+        List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 

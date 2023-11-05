@@ -49,8 +49,9 @@ public class TicketService {
         return verifiedTicket(id);
     }
 
-    public List<Ticket> getTicketList() {
-        return ticketRepository.getTicketList();
+    public List<Ticket> getTicketList(List<String> categorys) {
+
+        return ticketRepository.getTicketList(categorys);
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {
