@@ -32,14 +32,25 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberMapper.memberToMemberResponseDto(member));
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity getMember(@PathVariable Long memberId) {
+    @GetMapping("/{memberId}") // todo : 관리자 권한 있어야 실행 가능한 것으로 바꾸기
+    public ResponseEntity getMember(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable Long memberId) {
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.getMember(memberId));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
     @GetMapping
-    public ResponseEntity getMemberList() {
+    public ResponseEntity getMember(
+            @RequestHeader("Authorization") String accessToken) {
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+        MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(member);
+        return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity getMemberList(
+            @RequestHeader("Authorization") String accessToken) {
         List<MemberResponseDto> memberResponseDtoList = memberMapper.membersToMemberResponseDtos(memberService.getMemberList());
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDtoList);
     }
