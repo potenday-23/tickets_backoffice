@@ -8,7 +8,7 @@ import project.backend.domain.member.entity.SocialType;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor // todo : AllArgsConstructor는 무슨 뜻일까
+@AllArgsConstructor
 public class MemberPatchRequestDto {
     public SocialType socialType;
     public String socialId;

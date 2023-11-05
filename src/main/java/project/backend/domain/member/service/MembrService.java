@@ -21,8 +21,11 @@ public class MembrService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
 
-    public Member createMember(MemberPostRequestDto memberPostRequestDto){
-        Member member = Member.builder().socialType(SocialType.KAKAO).socialId(memberPostRequestDto.socialId).build();
+    public Member createMember(MemberPostRequestDto memberPostRequestDto) {
+        Member member = Member.builder().socialType(SocialType.KAKAO)
+                                        .socialId(memberPostRequestDto.socialId)
+                                        .nickname(memberPostRequestDto.nickname)
+                                        .profileUrl(memberPostRequestDto.profileUrl).build();
         memberRepository.save(member);
         return member;
     }
