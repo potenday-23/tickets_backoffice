@@ -1,5 +1,6 @@
 package project.backend.domain.category.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,11 @@ public class CategoryController {
 
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
+
+
+    @ApiOperation(
+            value = "카테고리 목록 조회",
+            notes = "카테고리 목록을 조회한다.")
     @GetMapping
     public ResponseEntity getCategoryList() {
         return ResponseEntity.status(HttpStatus.OK).body(categoryMapper.categorysToCategoryResponseDtos(categoryService.getCategoryList()));
