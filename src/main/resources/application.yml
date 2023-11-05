@@ -39,6 +39,11 @@ logging:
   level:
     project.backend: debug
 
+jwt:
+  secret: ${TICKETS_SECRET}
+  kakao:
+    client_id: ${TICKETS_CLIENT}
+
 server:
   port: 8080
   error:

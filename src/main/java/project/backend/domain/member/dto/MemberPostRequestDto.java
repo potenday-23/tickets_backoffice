@@ -13,4 +13,5 @@ public class MemberPostRequestDto {
     public String socialId;
     public String nickname;
     public String profileUrl;
+    public String refreshToken;
 }

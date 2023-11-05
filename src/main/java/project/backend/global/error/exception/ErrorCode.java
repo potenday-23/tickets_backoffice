@@ -15,6 +15,13 @@ public enum ErrorCode {
     // S3
     IMAGE_UPLOAD_FAIL(400, "S001", "이미지를 업로드할 수 없습니다."),
 
+    // Member
+    AUTHORIZATION_HEADER_NOT_VALID(400, "M001", "Authorization 헤더가 유효하지 않습니다."),
+    MISSING_REDIRECT_REQUEST_PARAM(400, "M002", "Redirect Url 을 설정해야 합니다."),
+    MISSING_REQUEST_PARAM(400, "M003", "Request Parameter를 정확하게 설정해야 합니다."),
+    KAKAO_CODE_NOT_VALID(400, "M004", "카카오 코드가 유효하지 않습니다."),
+    TOKEN_NOT_VALID(400, "M005", "AccessToken이 유효하지 않습니다."),
+
     // Ticket
     USER_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다.")
     ;

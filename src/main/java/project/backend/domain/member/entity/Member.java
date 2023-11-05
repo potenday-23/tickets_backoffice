@@ -35,6 +35,9 @@ public class Member extends BaseEntity {
     @Column(name = "profileUrl")
     public String profileUrl;
 
+    @Column(name = "refreshToken")
+    public String refreshToken;
+
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Ticket> tickets = new ArrayList<>();
 
@@ -42,11 +45,12 @@ public class Member extends BaseEntity {
     public List<MemberTicketLike> memberTicketLikes = new ArrayList<>();
 
     @Builder
-    public Member(SocialType socialType, String socialId, String nickname, String profileUrl){
+    public Member(SocialType socialType, String socialId, String nickname, String profileUrl, String refreshToken){
         this.socialType = socialType;
         this.socialId = socialId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
+        this.refreshToken = refreshToken;
     }
 
     // Patch

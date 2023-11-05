@@ -17,9 +17,21 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class MembrService {
+public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberMapper memberMapper;
+
+    /**
+     * socialId를 가진 Member가 없으면 새로운 Member생성, 아니면 기존 Member반환
+     *
+     * @param socialId
+     * @return
+     */
+    public Member findMemberBySocialId(String socialId) {
+        return memberRepository.findFirstBySocialId(socialId).orElseGet(() -> createMember(MemberPostRequestDto.builder()
+                .socialId(socialId)
+                .build()));
+    }
 
     public Member createMember(MemberPostRequestDto memberPostRequestDto) {
         Member member = Member.builder().socialType(SocialType.KAKAO)
@@ -48,7 +60,7 @@ public class MembrService {
         memberRepository.delete(verifiedMember(id));
     }
 
-    private Member verifiedMember(Long id) {
+    public Member verifiedMember(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
