@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static project.backend.domain.ticket.entity.QTicket.ticket;
-import static project.backend.domain.category.entity.QCategory.category;
 
 @RequiredArgsConstructor
 public class TicketRepositoryImpl implements TicketRepositoryCustom {
@@ -17,7 +16,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
 
     @Override
     public List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList) {
-        if (categorys == null) {
+        if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
                             ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)))

@@ -1,9 +1,6 @@
 package project.backend.domain.onboardingmembercategory.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import project.backend.domain.category.entity.Category;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.ticket.entity.Ticket;
@@ -13,7 +10,7 @@ import java.util.Optional;
 
 @Entity
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class OnboardingMemberCategory {
 
     @Id
@@ -28,13 +25,6 @@ public class OnboardingMemberCategory {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categoryId")
     public Category category;
-
-    // == 생성자 == //
-    @Builder
-    public OnboardingMemberCategory(Member member, Category category) {
-        this.member = member;
-        this.category = category;
-    }
 
     // == 연관관계 매핑 == //
     public void setOnboardingMemberCategory(Member member, Category category) {

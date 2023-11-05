@@ -79,10 +79,11 @@ public class MemberController {
             request.setProfileUrl(imageService.updateImage(profileImage, "Member", "profileUrl"));
         }
         if (categorys != null) {
+            categorys = categorys.stream().distinct().collect(Collectors.toList());
             memberService.onboardingMember(member.id, categorys);
         }
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), request));
-        memberResponseDto.categorys = member.onboardingMemberCategories.stream().map(c -> c.getCategory().name).collect(Collectors.toList());
+        memberResponseDto.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
