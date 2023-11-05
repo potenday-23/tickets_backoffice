@@ -34,6 +34,7 @@ public class TicketController {
     private final ImageService imageService;
     private final JwtService jwtService;
 
+
     @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity postTicket(
             @RequestHeader("Authorization") String accessToken,
@@ -66,12 +67,11 @@ public class TicketController {
      */
     @ApiOperation(
             value = "둘러보기 티켓 조회(전체 공개만)",
-            notes = "?categorys=영화,뮤지컬\n" +
-                    "?period=week    [week, month, 6month, day로 조회 가능]\n" +
-                    "?start=2023-11-03\n" +
-                    "?end=2023-11-05\n" +
-                    "Header['Authorization'] : 토큰 값\n" +
-                    "<부가 설명>\n" +
+            notes = "- ?categorys=영화,뮤지컬\n" +
+                    "- ?period=week    **[week, month, 6month, day로 조회 가능]**\n" +
+                    "- ?start=2023-11-03\n" +
+                    "- ?end=2023-11-05\n" +
+                    "- Header['Authorization'] : 토큰 값\n" +
                     "1. Authorization과 categorys를 입력할 경우, 유저의 온보딩 카테고리보다 categorys로 입력한 카테고리가 필터의 우선순위를 가집니다.\n" +
                     "2. start, end가 period보다 우선순위를 가집니다.\n" +
                     "3. start, end 두 값을 동시에 적지 않으면 filter 기능이 동작하지 않습니다.(에러는 발생하지 않습니다.)\n" +
