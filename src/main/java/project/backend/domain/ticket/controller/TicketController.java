@@ -5,6 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.backend.domain.jwt.service.JwtService;
+import project.backend.domain.member.entity.Member;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
@@ -13,6 +15,7 @@ import project.backend.domain.ticket.service.TicketService;
 import project.backend.domain.ticket.dto.TicketResponseDto;
 import project.backend.global.s3.service.ImageService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,16 +26,21 @@ public class TicketController {
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
     private final ImageService imageService;
+    private final JwtService jwtService;
 
     @RequestMapping(method=RequestMethod.POST, consumes="multipart/form-data")
     public ResponseEntity postTicket(
+            @RequestHeader("Authorization") String accessToken,
             @RequestPart(value="image") MultipartFile image,
             @RequestPart(value="ticketImage") MultipartFile ticketImage,
-            @RequestPart TicketPostRequestDto request) {
+            @Valid @RequestPart TicketPostRequestDto request) {
 
         // image, ticketImage 등록
         request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
         request.setTicketImageUrl(imageService.updateImage(ticketImage, "Ticket", "ticketImageURl"));
+
+        // 작성자 등록
+        request.setMember(jwtService.getMemberFromAccessToken(accessToken));
 
         // Ticket 생성
         Ticket ticket = ticketService.createTicket(request);

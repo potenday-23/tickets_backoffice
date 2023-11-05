@@ -24,7 +24,10 @@ public enum ErrorCode {
     USER_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다."),
 
     // Ticket
-    TICKET_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다.")
+    TICKET_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다."),
+
+    // Category
+    CATEGORY_NOT_FOUND(400, "CA001", "카테고리를 찾을 수 없습니다.")
 
     ;
 

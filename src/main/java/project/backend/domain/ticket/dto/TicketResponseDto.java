@@ -1,6 +1,8 @@
 package project.backend.domain.ticket.dto;
 
 import lombok.*;
+import project.backend.domain.category.dto.CategoryResponseDto;
+import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.ticket.entity.IsPrivate;
 
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor // todo : AllArgsConstructor는 무슨 뜻일까
+@AllArgsConstructor
 public class TicketResponseDto {
     public Long id;
     public String imageUrl;
@@ -22,4 +24,6 @@ public class TicketResponseDto {
     public Integer price;
     public String friend;
     public IsPrivate isPrivate;
+    public CategoryResponseDto category;
+    public MemberResponseDto member;
 }

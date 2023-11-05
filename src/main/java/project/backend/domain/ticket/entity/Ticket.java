@@ -53,7 +53,7 @@ public class Ticket extends BaseEntity {
     public String friend;
 
     @Column(name = "isPrivate")
-    public IsPrivate isPrivate;
+    public IsPrivate isPrivate = IsPrivate.PRIVATE;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "memberId")

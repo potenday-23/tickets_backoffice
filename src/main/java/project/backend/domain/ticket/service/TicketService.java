@@ -3,6 +3,7 @@ package project.backend.domain.ticket.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.backend.domain.category.service.CategoryService;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
@@ -19,6 +20,7 @@ import java.util.List;
 public class TicketService {
     private final TicketRepository ticketRepository;
     private final TicketMapper ticketMapper;
+    private final CategoryService categoryService;
 
     public Ticket createTicket(TicketPostRequestDto ticketPostRequestDto) {
         Ticket ticket = Ticket.builder()
@@ -33,6 +35,12 @@ public class TicketService {
                 .friend(ticketPostRequestDto.friend)
                 .isPrivate(ticketPostRequestDto.isPrivate)
                 .build();
+
+        // 연관관계 매핑
+        ticket.setMember(ticketPostRequestDto.member);
+        ticket.setCategory(categoryService.verifiedCategory(ticketPostRequestDto.categoryName));
+
+        // 저장
         ticketRepository.save(ticket);
         return ticket;
     }
