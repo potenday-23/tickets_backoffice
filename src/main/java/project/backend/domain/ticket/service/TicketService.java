@@ -50,7 +50,7 @@ public class TicketService {
     }
 
     public List<Ticket> getTicketList() {
-        return ticketRepository.findAll();
+        return ticketRepository.getTicketList();
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {
