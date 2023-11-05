@@ -1,5 +1,6 @@
 package project.backend.domain.category.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import project.backend.domain.category.service.CategoryService;
 @RestController
 @RequestMapping("/api/categorys")
 @RequiredArgsConstructor
+@Api(tags = "카테고리 API")
 public class CategoryController {
 
     private final CategoryService categoryService;
