@@ -12,4 +12,6 @@ import project.backend.domain.member.entity.SocialType;
 public class MemberPatchRequestDto {
     public SocialType socialType;
     public String socialId;
+    public String nickname;
+    public String profileUrl;
 }

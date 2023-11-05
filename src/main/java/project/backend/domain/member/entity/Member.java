@@ -29,6 +29,12 @@ public class Member extends BaseEntity {
     @Column(name = "socialId")
     public String socialId;
 
+    @Column(name = "nickname")
+    public String nickname;
+
+    @Column(name = "profileUrl")
+    public String profileUrl;
+
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Ticket> tickets = new ArrayList<>();
 
@@ -36,15 +42,19 @@ public class Member extends BaseEntity {
     public List<MemberTicketLike> memberTicketLikes = new ArrayList<>();
 
     @Builder
-    public Member(SocialType socialType, String socialId){
+    public Member(SocialType socialType, String socialId, String nickname, String profileUrl){
         this.socialType = socialType;
         this.socialId = socialId;
+        this.nickname = nickname;
+        this.profileUrl = profileUrl;
     }
 
     // Patch
     public Member patchMember(MemberPatchRequestDto memberPatchRequestDto){
         this.socialType = Optional.ofNullable(memberPatchRequestDto.getSocialType()).orElse(this.socialType);
         this.socialId = Optional.ofNullable(memberPatchRequestDto.getSocialId()).orElse(this.socialId);
+        this.nickname = Optional.ofNullable(memberPatchRequestDto.getNickname()).orElse(this.nickname);
+        this.profileUrl = Optional.ofNullable(memberPatchRequestDto.getProfileUrl()).orElse(this.profileUrl);
         return this;
     }
 
