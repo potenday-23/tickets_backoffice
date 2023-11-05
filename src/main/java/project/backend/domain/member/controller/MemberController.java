@@ -1,5 +1,6 @@
 package project.backend.domain.member.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
+@Api(tags = "멤버 API")
 public class MemberController {
 
     private final MemberService memberService;
