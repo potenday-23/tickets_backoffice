@@ -27,9 +27,10 @@ public class MemberService {
      * @param socialId
      * @return
      */
-    public Member findMemberBySocialId(String socialId) {
+    public Member findMemberBySocialId(String socialId, String profileUrl) {
         return memberRepository.findFirstBySocialId(socialId).orElseGet(() -> createMember(MemberPostRequestDto.builder()
                 .socialId(socialId)
+                .profileUrl(profileUrl)
                 .build()));
     }
 

@@ -48,8 +48,7 @@ public class JwtController {
         KakaoUserInfo kakaoUserInfo = jwtService.getKakaoUserInfo(token);
 
         // 해당 kakao ID를 가진 Member 반환
-        log.info(kakaoUserInfo.getKakaoId());
-        Member member = memberService.findMemberBySocialId(kakaoUserInfo.getKakaoId());
+        Member member = memberService.findMemberBySocialId(kakaoUserInfo.getKakaoId(), kakaoUserInfo.getProfileUrl());
 
         // accessToken과 refreshToken발급
         String accessToken = jwtService.getAccessToken(member); // 에러 발생

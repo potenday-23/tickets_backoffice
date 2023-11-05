@@ -59,8 +59,7 @@ public class Member extends BaseEntity {
         this.socialId = Optional.ofNullable(memberPatchRequestDto.getSocialId()).orElse(this.socialId);
         this.nickname = Optional.ofNullable(memberPatchRequestDto.getNickname()).orElse(this.nickname);
         this.profileUrl = Optional.ofNullable(memberPatchRequestDto.getProfileUrl()).orElse(this.profileUrl);
+        this.refreshToken = Optional.ofNullable(memberPatchRequestDto.getRefreshToken()).orElse(this.refreshToken);
         return this;
     }
-
-
 }
