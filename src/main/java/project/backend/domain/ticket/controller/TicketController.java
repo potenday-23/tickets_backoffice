@@ -45,6 +45,10 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDto);
     }
 
+    /**
+     * 회원 인증 받지 않아도 조회 가능한 api
+     * @return
+     */
     @GetMapping
     public ResponseEntity getTicketList() {
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketService.getTicketList());

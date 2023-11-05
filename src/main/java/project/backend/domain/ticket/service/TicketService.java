@@ -56,7 +56,7 @@ public class TicketService {
     }
 
     private Ticket verifiedTicket(Long id) {
-        return ticketRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return ticketRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.TICKET_NOT_FOUND));
     }
 
 }
