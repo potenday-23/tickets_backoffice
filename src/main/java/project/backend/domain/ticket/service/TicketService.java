@@ -75,12 +75,12 @@ public class TicketService {
 
     private List<LocalDateTime> getStartAndEnd(String period, String start, String end) {
 
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         List<LocalDateTime> startAndEndList = new ArrayList<>();
 
         if (start != null && end!= null) {
             startAndEndList.add(LocalDate.parse(start, dateTimeFormatter).atStartOfDay());
-            startAndEndList.add(LocalDate.parse(start, dateTimeFormatter).atTime(LocalTime.MAX));
+            startAndEndList.add(LocalDate.parse(end, dateTimeFormatter).atTime(LocalTime.MAX));
         } else if (Objects.equals(period, "week")) {
             startAndEndList.add(LocalDate.now().minusWeeks(1).atStartOfDay());
             startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
