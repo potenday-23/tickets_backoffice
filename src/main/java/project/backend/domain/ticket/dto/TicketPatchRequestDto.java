@@ -15,7 +15,7 @@ public class TicketPatchRequestDto {
     public String imageUrl;
     public String ticketImageUrl;
     public LocalDateTime ticketDate;
-    public Integer rating;
+    public Float rating;
     public String memo;
     public String seat;
     public String location;

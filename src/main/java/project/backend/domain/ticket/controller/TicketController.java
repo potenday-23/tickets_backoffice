@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
 import project.backend.domain.ticket.service.TicketService;
 import project.backend.domain.ticket.dto.TicketResponseDto;
+import project.backend.global.s3.service.ImageService;
 
 import java.util.List;
 
@@ -20,11 +22,20 @@ public class TicketController {
 
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
+    private final ImageService imageService;
 
+    @RequestMapping(method=RequestMethod.POST, consumes="multipart/form-data")
+    public ResponseEntity postTicket(
+            @RequestPart(value="image") MultipartFile image,
+            @RequestPart(value="ticketImage") MultipartFile ticketImage,
+            @RequestPart TicketPostRequestDto request) {
 
-    @PostMapping
-    public ResponseEntity postTicket(@RequestBody TicketPostRequestDto ticketPostRequestDto) {
-        Ticket ticket = ticketService.createTicket(ticketPostRequestDto);
+        // image, ticketImage 등록
+        request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
+        request.setTicketImageUrl(imageService.updateImage(ticketImage, "Ticket", "ticketImageURl"));
+
+        // Ticket 생성
+        Ticket ticket = ticketService.createTicket(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketMapper.ticketToTicketResponseDto(ticket));
     }
 

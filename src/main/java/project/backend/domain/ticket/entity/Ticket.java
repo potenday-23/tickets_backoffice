@@ -35,7 +35,7 @@ public class Ticket extends BaseEntity {
     public LocalDateTime ticketDate;
 
     @Column(name = "rating")
-    public Integer rating;
+    public Float rating;
 
     @Column(name = "memo")
     public String memo;
@@ -68,7 +68,7 @@ public class Ticket extends BaseEntity {
 
 
     @Builder
-    public Ticket(String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Integer rating, String memo, String seat,
+    public Ticket(String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
                   String location, Integer price, String friend, IsPrivate isPrivate) {
         this.imageUrl = imageUrl;
         this.ticketImageUrl = ticketImageUrl;

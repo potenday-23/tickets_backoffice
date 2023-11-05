@@ -25,7 +25,7 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: ticket2323
+      bucket: tickets2323
     credentials:
       access-key: ${TICKETS_S3_ACCESS}
       secret-key: ${TICKETS_S3_SECRET}

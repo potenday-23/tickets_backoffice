@@ -12,6 +12,9 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
 
+    // S3
+    IMAGE_UPLOAD_FAIL(400, "S001", "이미지를 업로드할 수 없습니다."),
+
     // Ticket
     USER_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다.")
     ;
