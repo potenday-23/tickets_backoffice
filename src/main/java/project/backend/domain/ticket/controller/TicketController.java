@@ -16,6 +16,8 @@ import project.backend.domain.ticket.dto.TicketResponseDto;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,11 +30,11 @@ public class TicketController {
     private final ImageService imageService;
     private final JwtService jwtService;
 
-    @RequestMapping(method=RequestMethod.POST, consumes="multipart/form-data")
+    @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity postTicket(
             @RequestHeader("Authorization") String accessToken,
-            @RequestPart(value="image") MultipartFile image,
-            @RequestPart(value="ticketImage") MultipartFile ticketImage,
+            @RequestPart(value = "image") MultipartFile image,
+            @RequestPart(value = "ticketImage") MultipartFile ticketImage,
             @Valid @RequestPart TicketPostRequestDto request) {
 
         // image, ticketImage 등록
@@ -55,14 +57,18 @@ public class TicketController {
 
     /**
      * 회원 인증 받지 않아도 조회 가능한 api
+     *
      * @return
      */
     @GetMapping
     public ResponseEntity getTicketList(
             @RequestParam(value = "categorys", required = false) List<String> categorys,
-            @RequestParam(value = "period", required = false) String period // 일주일, 한달, 6개월, 기간, 하루
+            @RequestParam(value = "period", required = false) String period, // 일주일(week), 한달(month), 6개월(6month), 하루(day)
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
+            @RequestHeader(value = "Authorization", required = false) String accessToken // todo : 온보딩 입력값에 따라서 초기 Category 달라지게 설정하기
     ) {
-        List<Ticket> ticketList = ticketService.getTicketList(categorys);
+        List<Ticket> ticketList = ticketService.getTicketList(categorys, period, start, end);
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }

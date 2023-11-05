@@ -12,7 +12,13 @@ import project.backend.domain.ticket.repository.TicketRepository;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +55,8 @@ public class TicketService {
         return verifiedTicket(id);
     }
 
-    public List<Ticket> getTicketList(List<String> categorys) {
-
-        return ticketRepository.getTicketList(categorys);
+    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end) {
+        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end));
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {
@@ -66,6 +71,33 @@ public class TicketService {
 
     private Ticket verifiedTicket(Long id) {
         return ticketRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.TICKET_NOT_FOUND));
+    }
+
+    private List<LocalDateTime> getStartAndEnd(String period, String start, String end) {
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        List<LocalDateTime> startAndEndList = new ArrayList<>();
+
+        if (start != null && end!= null) {
+            startAndEndList.add(LocalDate.parse(start, dateTimeFormatter).atStartOfDay());
+            startAndEndList.add(LocalDate.parse(start, dateTimeFormatter).atTime(LocalTime.MAX));
+        } else if (Objects.equals(period, "week")) {
+            startAndEndList.add(LocalDate.now().minusWeeks(1).atStartOfDay());
+            startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
+        } else if (Objects.equals(period, "month")) {
+            startAndEndList.add(LocalDate.now().minusMonths(1).atStartOfDay());
+            startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
+        } else if (Objects.equals(period, "6month")) {
+            startAndEndList.add(LocalDate.now().minusMonths(6).atStartOfDay());
+            startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
+        } else if (Objects.equals(period, "day")) {
+            startAndEndList.add(LocalDate.now().atStartOfDay());
+            startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
+        } else {
+            startAndEndList.add(LocalDate.now().minusYears(100).atStartOfDay());
+            startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
+        }
+        return startAndEndList;
     }
 
 }
