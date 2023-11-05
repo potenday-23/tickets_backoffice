@@ -1,10 +1,12 @@
 package project.backend.domain.member.controller;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
 import project.backend.domain.member.dto.MemberPostRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
@@ -12,6 +14,7 @@ import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
+import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -24,6 +27,7 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberMapper memberMapper;
     private final JwtService jwtService;
+    private final ImageService imageService;
 
 
     @PostMapping
@@ -55,12 +59,23 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDtoList);
     }
 
-    @PatchMapping
+    @ApiOperation(
+            value = "닉네임 & 프로필 이미지 변경",
+            notes = "닉네임만 입력하거나, 프로필 이미지만 입력하거나, 둘 다 동시에 변경 가능합니다.")
+    @RequestMapping(method = RequestMethod.PATCH, consumes = "multipart/form-data")
     public ResponseEntity patchMember(
             @RequestHeader("Authorization") String accessToken,
-            @Valid @RequestBody MemberPatchRequestDto memberPatchRequestDto) {
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request
+            ) {
         Member member = jwtService.getMemberFromAccessToken(accessToken);
-        MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), memberPatchRequestDto));
+        if (request == null) {
+            request = MemberPatchRequestDto.builder().build();
+        }
+        if (profileImage != null) {
+            request.setProfileUrl(imageService.updateImage(profileImage, "Member", "profileUrl"));
+        }
+        MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), request));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
