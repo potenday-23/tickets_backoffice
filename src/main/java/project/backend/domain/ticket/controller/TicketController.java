@@ -35,6 +35,25 @@ public class TicketController {
     private final JwtService jwtService;
 
 
+    @ApiOperation(
+            value = "티켓 생성하기",
+            notes = " - Header['Authorization'] : AccessToken값 입력\n" +
+                    " - image : MultipartFile 입력(사용자가 추가한 이미지)\n" +
+                    " - ticketImage : MultipartFile 입력(티켓 완성본 이미지)\n" +
+                    " - request : {\n" +
+                    "    \"ticketDate\" : \"2023-11-04T16:26:39.098\",\n" +
+                    "    \"rating\" : 1,\n" +
+                    "    \"memo\" : \"재미없는 공연이였다.\",\n" +
+                    "    \"seat\" : \"E292\",\n" +
+                    "    \"location\" : \"서울시 서울스퀘어\",\n" +
+                    "    \"price\" : 15000,\n" +
+                    "    \"friend\" : \"김가영\",\n" +
+                    "    \"isPrivate\" : \"PUBLIC\",\n" +
+                    "    \"categoryName\" : \"기타\"\n" +
+                    "}" +
+                    "1. ticketDate는 다음과 같은 형식으로 추가해주세요\n" +
+                    "2. isPrivate는 PUBLIC, PRIVATE으로만 추가 가능합니다.\n" +
+                    "3. rating은 별점으로, 0 ~ 5까지 소수점으로 입력할 수 있습니다.(n.5 권장)")
     @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity postTicket(
             @RequestHeader("Authorization") String accessToken,
