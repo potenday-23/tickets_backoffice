@@ -35,7 +35,7 @@ public class JwtController {
     @ApiOperation(
             value = "로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
             notes = " - 다음의 링크에서 사용 방법을 확인해 주세요 : https://www.notion.so/sideproject-unione/c9c895d9cc714cee89734d268560fe52")
-    @GetMapping("/login")
+    @GetMapping("/kakao/login")
     public ResponseEntity login(@RequestParam(value = "token", required = false) String token,
                                 @RequestParam(value = "code", required = false) String code,
                                 @RequestParam(value = "redirect_url", required = false) String redirect_url) {
