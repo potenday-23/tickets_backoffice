@@ -37,7 +37,7 @@ public class OnboardingMemberCategory {
     }
 
     // == 연관관계 매핑 == //
-    public void setMemberCategory(Member member, Category category) {
+    public void setOnboardingMemberCategory(Member member, Category category) {
         if (this.member != null) {
             if (this.member.getOnboardingMemberCategories().contains(this)) {
                 this.member.getOnboardingMemberCategories().remove(this);

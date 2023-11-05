@@ -14,10 +14,12 @@ import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
+import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/members")
@@ -66,7 +68,8 @@ public class MemberController {
     public ResponseEntity patchMember(
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-            @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request
+            @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request,
+            @RequestPart(value = "categorys", required = false) List<String> categorys
             ) {
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         if (request == null) {
@@ -75,7 +78,11 @@ public class MemberController {
         if (profileImage != null) {
             request.setProfileUrl(imageService.updateImage(profileImage, "Member", "profileUrl"));
         }
+        if (categorys != null) {
+            memberService.onboardingMember(member.id, categorys);
+        }
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), request));
+        memberResponseDto.categorys = member.onboardingMemberCategories.stream().map(c -> c.getCategory().name).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
