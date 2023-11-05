@@ -1,4 +1,4 @@
-package project.backend.domain.user.entity;
+package project.backend.domain.member.entity;
 
 import lombok.Getter;
 

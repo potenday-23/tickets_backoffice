@@ -4,12 +4,16 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import project.backend.domain.memberTicketLike.entity.MemberTicketLike;
+import project.backend.domain.category.entity.Category;
 import project.backend.domain.common.entity.BaseEntity;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
-import project.backend.domain.user.entity.User;
+import project.backend.domain.member.entity.Member;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -18,8 +22,9 @@ import java.util.Optional;
 public class Ticket extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // todo : IDENTITY와 AUTO 차이점이 뭔지?
-    @Column(name = "ticket_id")
+    @Column(name = "ticketId")
     public Long id;
+
     @Column(name = "imageUrl")
     public String imageUrl;
 
@@ -51,8 +56,15 @@ public class Ticket extends BaseEntity {
     public IsPrivate isPrivate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId")
-    private User user;
+    @JoinColumn(name = "memberId")
+    public Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryId")
+    public Category category;
+
+    @OneToMany(mappedBy = "ticket", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    public List<MemberTicketLike> memberTicketLikes = new ArrayList<>();
 
 
     @Builder
@@ -86,14 +98,23 @@ public class Ticket extends BaseEntity {
     }
 
     // == 연관관계 매핑 == //
-    public void setUser(User user) {
-        if (this.user != null) {
-            if (this.user.getTickets().contains(this)) {
-                this.user.getTickets().remove(this);
+    public void setMember(Member member) {
+        if (this.member != null) {
+            if (this.member.getTickets().contains(this)) {
+                this.member.getTickets().remove(this);
             }
         }
-        this.user = Optional.ofNullable(user).orElse(this.user);
-        this.user.getTickets().add(this);
+        this.member = Optional.ofNullable(member).orElse(this.member);
+        this.member.getTickets().add(this);
     }
 
+    public void setCategory(Category category) {
+        if (this.category != null) {
+            if (this.category.getTickets().contains(this)) {
+                this.category.getTickets().remove(this);
+            }
+        }
+        this.category = Optional.ofNullable(category).orElse(this.category);
+        this.category.getTickets().add(this);
+    }
 }

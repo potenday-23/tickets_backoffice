@@ -1,12 +1,12 @@
-package project.backend.domain.user.mapper;
+package project.backend.domain.member.mapper;
 
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
-import project.backend.domain.user.dto.UserPostRequestDto;
-import project.backend.domain.user.dto.UserResponseDto;
-import project.backend.domain.user.dto.UserResponseDto.UserResponseDtoBuilder;
-import project.backend.domain.user.entity.User;
-import project.backend.domain.user.entity.User.UserBuilder;
+import project.backend.domain.member.dto.UserPostRequestDto;
+import project.backend.domain.member.dto.UserResponseDto;
+import project.backend.domain.member.dto.UserResponseDto.UserResponseDtoBuilder;
+import project.backend.domain.member.entity.User;
+import project.backend.domain.member.entity.User.UserBuilder;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
