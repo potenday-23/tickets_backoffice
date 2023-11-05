@@ -62,15 +62,19 @@ public class MemberController {
     }
 
     @ApiOperation(
-            value = "닉네임 & 프로필 이미지 변경",
-            notes = "닉네임만 입력하거나, 프로필 이미지만 입력하거나, 둘 다 동시에 변경 가능합니다.")
+            value = "닉네임 & 프로필 이미지 등록, 온보딩 기능",
+            notes = " - 닉네임 변경 원할 시 : request -> {\"nickname\" : \"가방이\"}\n" +
+                    " - 프로필 이미지 변경 원할 시 : profileImage -> MultipartFile으로 파일 입력 \n" +
+                    " - 온보딩 입력 & 수정 원힐 시 : categorys -> [\"기타\", \"영화\"] \n" +
+                    " - 아직 중복 검사 로직은 없습니다!\n" +
+                    " - 닉네임과 온보딩 입력란은 application/json형식으로 요청해주세요.(swagger에서는 작동하지 않습니다.)")
     @RequestMapping(method = RequestMethod.PATCH, consumes = "multipart/form-data")
     public ResponseEntity patchMember(
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request,
             @RequestPart(value = "categorys", required = false) List<String> categorys
-            ) {
+            ) { // todo : 중복 검사 로직 작성하기
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         if (request == null) {
             request = MemberPatchRequestDto.builder().build();
