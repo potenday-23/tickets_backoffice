@@ -63,6 +63,7 @@ public class MemberService {
 
     public Member onboardingMember(Long id, List<String> categorys) {
         Member member = verifiedMember(id);
+        member.getOnboardingMemberCategories().clear();
         for(String category : categorys) {
             onboardingMemberCategoryService.createOnboardingMemberCategory(member, categoryService.verifiedCategory(category));
         }
