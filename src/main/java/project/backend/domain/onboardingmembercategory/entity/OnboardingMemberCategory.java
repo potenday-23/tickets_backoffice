@@ -15,15 +15,15 @@ public class OnboardingMemberCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onboardingMemberCategoryId")
+    @Column(name = "onboarding_member_category_id")
     public Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     public Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "category_id")
     public Category category;
 
     // == 연관관계 매핑 == //

@@ -22,45 +22,36 @@ import java.util.Optional;
 public class Ticket extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // todo : IDENTITY와 AUTO 차이점이 뭔지?
-    @Column(name = "ticketId")
+    @Column(name = "ticket_id")
     public Long id;
 
-    @Column(name = "imageUrl")
     public String imageUrl;
 
-    @Column(name = "ticketImageUrl")
     public String ticketImageUrl;
 
-    @Column(name = "ticketDate")
     public LocalDateTime ticketDate;
 
-    @Column(name = "rating")
     public Float rating;
 
-    @Column(name = "memo")
     public String memo;
 
-    @Column(name = "seat")
     public String seat;
 
-    @Column(name = "location")
     public String location;
 
-    @Column(name = "price")
     public Integer price;
 
-    @Column(name = "friend")
     public String friend;
 
-    @Column(name = "isPrivate")
+    @Enumerated(EnumType.STRING)
     public IsPrivate isPrivate = IsPrivate.PRIVATE;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     public Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "category_id")
     public Category category;
 
     @OneToMany(mappedBy = "ticket", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})

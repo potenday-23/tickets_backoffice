@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.domain.category.service.CategoryService;
+import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberPostRequestDto;
+import project.backend.domain.member.entity.Agree;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
@@ -25,26 +27,47 @@ public class MemberService {
     private final CategoryService categoryService;
     private final OnboardingMemberCategoryService onboardingMemberCategoryService;
 
+
     /**
-     * socialId를 가진 Member가 없으면 새로운 Member생성, 아니면 기존 Member반환
-     *
+     * socialId와 socialType 기준 Member 반환
      * @param socialId
-     * @return
+     * @param socialType
+     * @return Member
      */
-    public Member findMemberBySocialId(String socialId, String profileUrl) {
-        return memberRepository.findFirstBySocialId(socialId).orElseGet(() -> createMember(MemberPostRequestDto.builder()
-                .socialId(socialId)
-                .profileUrl(profileUrl)
-                .build()));
+    public Member getMemberBySocial(String socialId, SocialType socialType) {
+        return memberRepository.findFirstBySocialIdAndSocialType(socialId, socialType)
+                .orElseGet(() -> createMember(socialId, socialType));
     }
 
-    public Member createMember(MemberPostRequestDto memberPostRequestDto) {
-        Member member = Member.builder().socialType(SocialType.KAKAO)
-                                        .socialId(memberPostRequestDto.socialId)
-                                        .nickname(memberPostRequestDto.nickname)
-                                        .profileUrl(memberPostRequestDto.profileUrl).build();
+    /**
+     * socialId와 socialType를 가지고 있는 Member 생성
+     * @param socialId
+     * @param socialType
+     * @return Memeber
+     */
+    public Member createMember(String socialId, SocialType socialType) {
+        Member member = Member.builder()
+                .socialId(socialId)
+                .socialType(socialType)
+                .marketingAgree(Agree.DISAGREE)
+                .pushAgree(Agree.DISAGREE).build();
         memberRepository.save(member);
         return member;
+    }
+
+    /**
+     * 닉네임 중복 검사
+     * @param nickname
+     * @return
+     */
+    public void verifiedNickname(String nickname) {
+        if (nickname != null && memberRepository.findAllByNickname(nickname).size() > 0) {
+            throw new BusinessException(ErrorCode.NICKNAME_DUPLICATE);
+        }
+    }
+
+    public Member getMemberBySocialIdAndSocialType(String socialId, SocialType socialType) {
+        return memberRepository.findFirstBySocialIdAndSocialType(socialId, socialType).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     public Member getMember(Long id) {
@@ -55,10 +78,7 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
-    public Member getMemberByUserIdAndSocialType(String socialId, String SocialType) {
-        SocialType socialType = project.backend.domain.member.entity.SocialType.valueOf(SocialType);
-        return memberRepository.findFirstBySocialIdAndSocialType(socialId, socialType).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
-    }
+
 
     public Member patchMember(Long id, MemberPatchRequestDto memberPatchRequestDto) {
         Member member = verifiedMember(id).patchMember(memberPatchRequestDto);

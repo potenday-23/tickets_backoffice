@@ -13,6 +13,7 @@ import project.backend.domain.member.dto.MemberPostRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.entity.Member;
+import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
 import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
@@ -35,13 +36,6 @@ public class MemberController {
     private final JwtService jwtService;
     private final ImageService imageService;
 
-
-    @PostMapping
-    public ResponseEntity postMember(@RequestBody MemberPostRequestDto memberPostRequestDto) {
-        Member member = memberService.createMember(memberPostRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberMapper.memberToMemberResponseDto(member));
-    }
-
     @GetMapping("/{memberId}") // todo : 관리자 권한 있어야 실행 가능한 것으로 바꾸기
     public ResponseEntity getMember(
             @RequestHeader("Authorization") String accessToken,
@@ -61,13 +55,13 @@ public class MemberController {
     public ResponseEntity getMember(
             @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestParam(required = false) String socialId,
-            @RequestParam(required = false) String socialType) {
+            @RequestParam(required = false) SocialType socialType) {
 
         Member member;
         if (accessToken != null) {
             member = jwtService.getMemberFromAccessToken(accessToken);
         } else if (socialId != null && socialType != null) {
-            member = memberService.getMemberByUserIdAndSocialType(socialId, socialType);
+            member = memberService.getMemberBySocialIdAndSocialType(socialId, socialType);
         } else {
             throw new BusinessException(ErrorCode.INVALID_REQUEST);
         }

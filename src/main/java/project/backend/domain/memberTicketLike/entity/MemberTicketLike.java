@@ -17,15 +17,15 @@ public class MemberTicketLike {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "memberTicketLikeId")
+    @Column(name = "member_ticket_like_id")
     public Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     public Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticketId")
+    @JoinColumn(name = "ticket_id")
     public Ticket ticket;
 
     // == 생성자 == //

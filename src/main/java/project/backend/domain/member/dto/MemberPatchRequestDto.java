@@ -1,6 +1,7 @@
 package project.backend.domain.member.dto;
 
 import lombok.*;
+import project.backend.domain.member.entity.Agree;
 import project.backend.domain.member.entity.SocialType;
 
 import javax.validation.constraints.Pattern;
@@ -18,4 +19,6 @@ public class MemberPatchRequestDto {
     public String nickname;
     public String profileUrl;
     public String refreshToken;
+    public Agree marketingAgree;
+    public Agree pushAgree;
 }

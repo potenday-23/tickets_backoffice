@@ -112,7 +112,7 @@ public class TicketController {
     }
 
     @PatchMapping("/{ticketId}")
-    public ResponseEntity putTicket(
+    public ResponseEntity patchTicket(
             @PathVariable Long ticketId,
             @RequestBody TicketPatchRequestDto ticketPatchRequestDto) {
         TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticketService.patchTicket(ticketId, ticketPatchRequestDto));

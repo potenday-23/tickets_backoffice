@@ -9,17 +9,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.jwt.dto.KakaoUserInfo;
 import project.backend.domain.jwt.response.JwtResponse;
 import project.backend.domain.jwt.response.TokenResponse;
 import project.backend.domain.jwt.service.JwtService;
+import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
+import project.backend.global.s3.service.ImageService;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,61 +39,49 @@ public class JwtController {
     private final MemberService memberService;
     private final JwtService jwtService;
     private final MemberMapper memberMapper;
+    private final ImageService imageService;
 
 
     @ApiOperation(
-            value = "React 방식 | 로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
-            notes = " - userId : String으로 입력" +
-                    " - profileUrl : String으로 url 입력")
+            value = "회원가입 & 로그인",
+            notes = "")
     @PostMapping("/login")
     public ResponseEntity login(
-            @RequestBody JwtRequestDto jwtRequestDto) {
-        // 해당 kakao ID를 가진 Member 반환
-        Member member = memberService.findMemberBySocialId(jwtRequestDto.getUserId(), jwtRequestDto.getProfileUrl());
+            @Valid @RequestPart JwtRequestDto request,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+            @RequestPart(value = "categorys", required = false) List<String> categorys) {
 
-        // accessToken과 refreshToken발급
-        String accessToken = jwtService.getAccessToken(member); // 에러 발생
-        String refreshToken = member.getRefreshToken();
+        // 닉네임 중복 검사
+        memberService.verifiedNickname(request.nickname);
 
-        // 응답
-        MemberResponseDto memberResponse = memberMapper.memberToMemberResponseDto(member);
-        TokenResponse tokenResponse = TokenResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken).build();
-        JwtResponse jwtResponse = JwtResponse.builder()
-                .token(tokenResponse)
-                .member(memberResponse).build();
-        return new ResponseEntity<>(jwtResponse, HttpStatus.CREATED);
-    }
+        // socialId, socialType기준 Member 반환, 없다면 새로 생성
+        Member member = memberService.getMemberBySocial(request.socialId, request.socialType);
 
-    @ApiOperation(
-            value = "REST 방식 | 로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
-            notes = " - 다음의 링크에서 사용 방법을 확인해 주세요 : https://www.notion.so/sideproject-unione/c9c895d9cc714cee89734d268560fe52")
-    @GetMapping("/v2/kakao/login")
-    public ResponseEntity loginv2(@RequestParam(value = "token", required = false) String token,
-                                @RequestParam(value = "code", required = false) String code,
-                                @RequestParam(value = "redirect_url", required = false) String redirect_url) {
-
-        // 유저 정보 얻기
-        if(!StringUtils.isEmpty(code)) {
-            if (StringUtils.isEmpty(redirect_url)){
-                throw new BusinessException(ErrorCode.MISSING_REDIRECT_REQUEST_PARAM);
-            }
-            token = jwtService.getKakaoAccessToken(code, redirect_url);
-        } else if(StringUtils.isEmpty(token)) {
-            throw new BusinessException(ErrorCode.MISSING_REQUEST_PARAM);
+        // profile Url 설정
+        if (profileImage != null) {
+            request.setProfileUrl(imageService.updateImage(profileImage, "Member", "profileUrl"));
         }
-        KakaoUserInfo kakaoUserInfo = jwtService.getKakaoUserInfo(token);
 
-        // 해당 kakao ID를 가진 Member 반환
-        Member member = memberService.findMemberBySocialId(kakaoUserInfo.getKakaoId(), kakaoUserInfo.getProfileUrl());
+        // nickname, profileUrl, marketingAgree, pushAgree 설정
+        memberService.patchMember(member.getId(), MemberPatchRequestDto.builder()
+                                                                        .nickname(request.nickname)
+                                                                        .profileUrl(request.profileUrl)
+                                                                        .marketingAgree(request.marketingAgree)
+                                                                        .pushAgree(request.pushAgree).build());
 
-        // accessToken과 refreshToken발급
-        String accessToken = jwtService.getAccessToken(member); // 에러 발생
+        // 온보딩 카테고리 설정
+        if (categorys != null) {
+            categorys = categorys.stream().distinct().collect(Collectors.toList());
+            memberService.onboardingMember(member.id, categorys);
+        }
+
+        // accessToken과 refreshToken 발급
+        String accessToken = jwtService.getAccessToken(member);
         String refreshToken = member.getRefreshToken();
 
         // 응답
         MemberResponseDto memberResponse = memberMapper.memberToMemberResponseDto(member);
+        memberResponse.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
         TokenResponse tokenResponse = TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken).build();
@@ -95,5 +90,4 @@ public class JwtController {
                 .member(memberResponse).build();
         return new ResponseEntity<>(jwtResponse, HttpStatus.CREATED);
     }
-
 }

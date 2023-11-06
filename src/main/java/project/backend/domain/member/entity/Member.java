@@ -21,23 +21,25 @@ import java.util.Optional;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // todo : IDENTITY와 AUTO 차이점이 뭔지?
-    @Column(name = "memberId")
+    @Column(name = "member_id")
     public Long id;
 
     @Enumerated(value = EnumType.STRING)
     public SocialType socialType;
 
-    @Column(name = "socialId")
     public String socialId;
 
-    @Column(name = "nickname")
     public String nickname;
 
-    @Column(name = "profileUrl")
     public String profileUrl;
 
-    @Column(name = "refreshToken")
     public String refreshToken;
+
+    @Enumerated(EnumType.STRING)
+    public Agree marketingAgree = Agree.DISAGREE;
+
+    @Enumerated(EnumType.STRING)
+    public Agree pushAgree = Agree.DISAGREE;
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Ticket> tickets = new ArrayList<>();
@@ -49,12 +51,14 @@ public class Member extends BaseEntity {
     public List<OnboardingMemberCategory> onboardingMemberCategories = new ArrayList<>();
 
     @Builder
-    public Member(SocialType socialType, String socialId, String nickname, String profileUrl, String refreshToken){
+    public Member(SocialType socialType, String socialId, String nickname, String profileUrl, String refreshToken, Agree marketingAgree, Agree pushAgree){
         this.socialType = socialType;
         this.socialId = socialId;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
         this.refreshToken = refreshToken;
+        this.marketingAgree = marketingAgree;
+        this.pushAgree = pushAgree;
     }
 
     // Patch
@@ -62,6 +66,8 @@ public class Member extends BaseEntity {
         this.nickname = Optional.ofNullable(memberPatchRequestDto.getNickname()).orElse(this.nickname);
         this.profileUrl = Optional.ofNullable(memberPatchRequestDto.getProfileUrl()).orElse(this.profileUrl);
         this.refreshToken = Optional.ofNullable(memberPatchRequestDto.getRefreshToken()).orElse(this.refreshToken);
+        this.marketingAgree = Optional.ofNullable(memberPatchRequestDto.getMarketingAgree()).orElse(this.marketingAgree);
+        this.pushAgree = Optional.ofNullable(memberPatchRequestDto.getPushAgree()).orElse(this.pushAgree);
         return this;
     }
 }

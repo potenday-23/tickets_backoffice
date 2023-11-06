@@ -23,7 +23,8 @@ public enum ErrorCode {
     MISSING_REQUEST_PARAM(400, "M003", "Request Parameter를 정확하게 설정해야 합니다."),
     KAKAO_CODE_NOT_VALID(400, "M004", "카카오 코드가 유효하지 않습니다."),
     TOKEN_NOT_VALID(400, "M005", "AccessToken이 유효하지 않습니다."),
-    MEMBER_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다."),
+    MEMBER_NOT_FOUND(400, "M006", "사용자를 찾을 수 없습니다."),
+    NICKNAME_DUPLICATE(400, "M007", "닉네임이 중복되었습니다."),
 
     // Ticket
     TICKET_NOT_FOUND(400, "U001", "사용자를 찾을 수 없습니다."),
