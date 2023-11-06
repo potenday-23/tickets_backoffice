@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.domain.category.service.CategoryService;
+import project.backend.domain.jwt.service.JwtService;
 import project.backend.domain.member.entity.Member;
+import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
+import project.backend.domain.ticket.entity.IsPrivate;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
 import project.backend.domain.ticket.repository.TicketRepository;
@@ -27,8 +30,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class TicketService {
     private final TicketRepository ticketRepository;
-    private final TicketMapper ticketMapper;
     private final CategoryService categoryService;
+    private final JwtService jwtService;
 
     public Ticket createTicket(TicketPostRequestDto ticketPostRequestDto) {
         Ticket ticket = Ticket.builder()
@@ -55,8 +58,19 @@ public class TicketService {
         return ticket;
     }
 
-    public Ticket getTicket(Long id) {
-        return verifiedTicket(id);
+    /**
+     * 내 티켓 또는 전체공개 티켓만 조회 가능
+     * @param id
+     * @param accessToken
+     * @return
+     */
+    public Ticket getTicket(Long id, String accessToken) {
+        Ticket ticket = verifiedTicket(id);
+        if (ticket.isPrivate == IsPrivate.PUBLIC || ticket.member == jwtService.getMemberFromAccessToken(accessToken)) {
+            return ticket;
+        } else {
+            throw new BusinessException(ErrorCode.TICKET_VIEW_FAIL);
+        }
     }
 
     public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search, List<Member> members) {

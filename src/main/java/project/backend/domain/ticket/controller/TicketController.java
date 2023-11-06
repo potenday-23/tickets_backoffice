@@ -19,6 +19,7 @@ import project.backend.domain.ticket.dto.TicketResponseDto;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -81,9 +82,17 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ticketMapper.ticketToTicketResponseDto(ticket));
     }
 
+    @ApiOperation(
+            value = "티켓 조회하기 - 내 티켓 혹은 전체 공개 티켓만 조회 가능",
+            notes = " - ticketId는 필수\n" +
+                    " - Authorization Header는 선택")
     @GetMapping("/{ticketId}")
-    public ResponseEntity getTicket(@PathVariable Long ticketId) {
-        TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticketService.getTicket(ticketId));
+    public ResponseEntity getTicket(
+            @Positive @PathVariable Long ticketId,
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+
+        Ticket ticket = ticketService.getTicket(ticketId, accessToken);
+        TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticket);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDto);
     }
 
