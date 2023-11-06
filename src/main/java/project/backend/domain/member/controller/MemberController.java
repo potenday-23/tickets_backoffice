@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
+import project.backend.domain.member.dto.MemberNicknameResponseDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
@@ -119,6 +120,16 @@ public class MemberController {
         memberResponseDto.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
+
+    @ApiOperation(value = "닉네임 검사",
+                    notes = "?nickname=닉네임입력")
+    @GetMapping("/nickname")
+    public ResponseEntity verifiedNickname(
+            @RequestParam String nickname) {
+        verifiedNickname(nickname);
+        return ResponseEntity.status(HttpStatus.OK).body(MemberNicknameResponseDto.builder().message("닉네임을 사용할 수 있습니다.").nickname(nickname).build());
+    }
+
 
     @ApiOperation(value = "회원 탈퇴")
     @DeleteMapping
