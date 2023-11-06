@@ -69,8 +69,13 @@ public class TicketService {
         return ticket;
     }
 
-    public void deleteTicket(Long id) {
-        ticketRepository.delete(verifiedTicket(id));
+    public void deleteTicket(Long id, Member member) {
+        Ticket ticket = verifiedTicket(id);
+        if (ticket.member == member) {
+            ticketRepository.delete(ticket);
+        } else {
+            throw new BusinessException(ErrorCode.TICKET_DELETE_FAIL);
+        }
     }
 
     private Ticket verifiedTicket(Long id) {

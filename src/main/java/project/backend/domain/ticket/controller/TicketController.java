@@ -140,9 +140,14 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDto);
     }
 
+    @ApiOperation(
+            value = "티켓 삭제하기(내 티켓만 삭제 가능)",
+            notes = "Header의 Authorization 필수")
     @DeleteMapping("/{ticketId}")
-    public ResponseEntity deleteTicket(@PathVariable Long ticketId) {
-        ticketService.deleteTicket(ticketId);
+    public ResponseEntity deleteTicket(
+            @RequestHeader(value = "Authorization") String accessToken,
+            @PathVariable Long ticketId) {
+        ticketService.deleteTicket(ticketId, jwtService.getMemberFromAccessToken(accessToken));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
