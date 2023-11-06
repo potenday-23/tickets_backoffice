@@ -16,7 +16,7 @@ import project.backend.domain.notice.service.NoticeService;
 
 import java.util.List;
 
-@Api(tags = "로그인 API")
+@Api(tags = "공지 API")
 @RestController
 @RequestMapping("/api/notices")
 @RequiredArgsConstructor
