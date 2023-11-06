@@ -15,6 +15,7 @@ import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.mapper.MemberMapper;
+import project.backend.domain.member.service.LogoutTokenService;
 import project.backend.domain.member.service.MemberService;
 import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
 import project.backend.global.error.exception.BusinessException;
@@ -35,6 +36,7 @@ public class MemberController {
     private final MemberMapper memberMapper;
     private final JwtService jwtService;
     private final ImageService imageService;
+    private final LogoutTokenService logoutTokenService;
 
     @GetMapping("/{memberId}") // todo : 관리자 권한 있어야 실행 가능한 것으로 바꾸기
     public ResponseEntity getMember(
@@ -113,6 +115,14 @@ public class MemberController {
     public ResponseEntity deleteMember(
             @RequestHeader("Authorization") String accessToken) {
         memberService.deleteMember(jwtService.getMemberFromAccessToken(accessToken).getId());
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @ApiOperation(value = "로그아웃")
+    @GetMapping("/logout")
+    public ResponseEntity logoutMember(
+            @RequestHeader("Authorization") String accessToken) {
+        logoutTokenService.memberLogout(accessToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

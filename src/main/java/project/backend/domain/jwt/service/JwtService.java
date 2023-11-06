@@ -12,6 +12,7 @@ import project.backend.domain.jwt.dto.KakaoUserInfo;
 import project.backend.domain.jwt.provider.JwtProvider;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.entity.Member;
+import project.backend.domain.member.repository.LogoutTokenRepository;
 import project.backend.domain.member.service.MemberService;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
@@ -27,6 +28,7 @@ import java.net.URL;
 public class JwtService {
 
     private final MemberService memberService;
+    private final LogoutTokenRepository logoutTokenRepository;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -47,6 +49,9 @@ public class JwtService {
     }
 
     public Member getMemberFromAccessToken(String accessToken) {
+        if (logoutTokenRepository.findAllByToken(accessToken).size() > 0) {
+            throw new BusinessException(ErrorCode.MEMBER_LOGOUT);
+        }
         accessToken = accessToken.split(" ")[1];
         Long userId = JwtProvider.getUserId(accessToken, secretKey);
         return memberService.verifiedMember(userId);
