@@ -23,7 +23,7 @@ public class TicketPostRequestDto {
     public LocalDateTime ticketDate;
     @Min(value = 0, message = "0보다 작은 값은 별점으로 설정할 수 없습니다.")
     @Max(value = 5, message = "5보다 큰 값은 별점으로 설정할 수 없습니다.")
-    public Float rating; // todo : 필수로 입력받도록 변경하기
+    public Float rating;
     @NotNull(message = "메모를 입력해야 합니다.")
     public String memo;
     public String seat;
@@ -35,5 +35,6 @@ public class TicketPostRequestDto {
     public Member member;
     @NotNull(message = "카테고리명을 선택해야 합니다.")
     public String categoryName;
+    @NotNull(message = "레이아웃 타입을 선택해야 합니다.")
     public String layoutType;
 }
