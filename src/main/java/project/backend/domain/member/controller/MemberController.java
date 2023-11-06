@@ -12,12 +12,15 @@ import project.backend.domain.jwt.service.JwtService;
 import project.backend.domain.member.dto.MemberPostRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
+import project.backend.domain.member.dto.MemberStatisticsResponseDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.LogoutTokenService;
 import project.backend.domain.member.service.MemberService;
 import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
+import project.backend.domain.ticket.repository.TicketRepository;
+import project.backend.domain.ticket.service.TicketService;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
@@ -44,6 +47,14 @@ public class MemberController {
             @PathVariable Long memberId) {
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.getMember(memberId));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity getStatistics(
+            @RequestHeader("Authorization") String accessToken) {
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+        MemberStatisticsResponseDto memberStatisticsResponseDto = memberService.getMemberStatistics(member);
+        return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDto);
     }
 
     @ApiOperation(

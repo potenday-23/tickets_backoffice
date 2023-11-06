@@ -4,15 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.domain.category.service.CategoryService;
-import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
-import project.backend.domain.member.dto.MemberPostRequestDto;
+import project.backend.domain.member.dto.MemberStatisticsResponseDto;
 import project.backend.domain.member.entity.Agree;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.repository.MemberRepository;
 import project.backend.domain.onboardingmembercategory.service.OnboardingMemberCategoryService;
+import project.backend.domain.ticket.repository.TicketRepository;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 
@@ -26,6 +26,7 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final CategoryService categoryService;
     private final OnboardingMemberCategoryService onboardingMemberCategoryService;
+    private final TicketRepository ticketRepository;
 
 
     /**
@@ -95,6 +96,11 @@ public class MemberService {
             onboardingMemberCategoryService.createOnboardingMemberCategory(member, categoryService.verifiedCategory(category));
         }
         return member;
+    }
+
+    public MemberStatisticsResponseDto getMemberStatistics(Member member) {
+        // 전체 중 몇 퍼센트 사용했는지?
+        return null;
     }
 
     public void deleteMember(Long id) {
