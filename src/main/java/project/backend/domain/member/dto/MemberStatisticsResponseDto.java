@@ -8,4 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberStatisticsResponseDto {
+    private String hello;
 }
