@@ -99,7 +99,7 @@ public class TicketController {
      * @return
      */
     @ApiOperation(
-            value = "둘러보기 티켓 조회(전체 공개만)",
+            value = "둘러보기 티켓 조회 - 전체 공개만 ",
             notes = " - ?categorys=영화,뮤지컬\n" +
                     " - &period=week    **[week, month, 6month, day로 조회 가능]**\n" +
                     " - &start=2023-11-03\n" +
@@ -139,7 +139,7 @@ public class TicketController {
     }
 
     @ApiOperation(
-            value = "티켓 수정하기",
+            value = "티켓 수정하기 - 내 티켓만 수정 가능",
             notes = " - Header['Authorization'] : AccessToken값 입력\n" +
                     " - image : MultipartFile 입력(사용자가 추가한 이미지)\n" +
                     " - request : {\n" +
@@ -180,7 +180,7 @@ public class TicketController {
     }
 
     @ApiOperation(
-            value = "티켓 삭제하기(내 티켓만 삭제 가능)",
+            value = "티켓 삭제하기 - 내 티켓만 삭제 가능",
             notes = "Header의 Authorization 필수")
     @DeleteMapping("/{ticketId}")
     public ResponseEntity deleteTicket(
