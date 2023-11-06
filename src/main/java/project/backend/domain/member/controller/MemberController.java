@@ -109,7 +109,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "회원 탈퇴")
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping
     public ResponseEntity deleteMember(
             @RequestHeader("Authorization") String accessToken) {
         memberService.deleteMember(jwtService.getMemberFromAccessToken(accessToken).getId());
