@@ -27,4 +27,5 @@ public class TicketResponseDto {
     public IsPrivate isPrivate;
     public CategoryResponseDto category;
     public MemberResponseDto member;
+    public String layoutType;
 }

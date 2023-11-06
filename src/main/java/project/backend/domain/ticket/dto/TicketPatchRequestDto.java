@@ -23,4 +23,5 @@ public class TicketPatchRequestDto {
     public Integer price;
     public String friend;
     public IsPrivate isPrivate;
+    public String layoutType;
 }

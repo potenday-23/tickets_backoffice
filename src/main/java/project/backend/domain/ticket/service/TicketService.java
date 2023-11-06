@@ -43,6 +43,7 @@ public class TicketService {
                 .price(ticketPostRequestDto.price)
                 .friend(ticketPostRequestDto.friend)
                 .isPrivate(ticketPostRequestDto.isPrivate)
+                .layoutType(ticketPostRequestDto.layoutType)
                 .build();
 
         // 연관관계 매핑

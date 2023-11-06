@@ -45,6 +45,8 @@ public class Ticket extends BaseEntity {
 
     public String friend;
 
+    public String layoutType;
+
     @Enumerated(EnumType.STRING)
     public IsPrivate isPrivate = IsPrivate.PRIVATE;
 
@@ -62,7 +64,7 @@ public class Ticket extends BaseEntity {
 
     @Builder
     public Ticket(String title, String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
-                  String location, Integer price, String friend, IsPrivate isPrivate) {
+                  String location, Integer price, String friend, IsPrivate isPrivate, String layoutType) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.ticketImageUrl = ticketImageUrl;
@@ -74,6 +76,7 @@ public class Ticket extends BaseEntity {
         this.price = price;
         this.friend = friend;
         this.isPrivate = isPrivate;
+        this.layoutType = layoutType;
     }
 
     // Patch
@@ -89,6 +92,7 @@ public class Ticket extends BaseEntity {
         this.price = (price != 0) ? ticketPatchRequestDto.getPrice() : this.price;
         this.friend = Optional.ofNullable(ticketPatchRequestDto.getFriend()).orElse(this.friend);
         this.isPrivate = Optional.ofNullable(ticketPatchRequestDto.getIsPrivate()).orElse(this.isPrivate);
+        this.layoutType = Optional.ofNullable(ticketPatchRequestDto.getLayoutType()).orElse(this.layoutType);
         return this;
     }
 

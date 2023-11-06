@@ -35,4 +35,5 @@ public class TicketPostRequestDto {
     public Member member;
     @NotNull(message = "카테고리명을 선택해야 합니다.")
     public String categoryName;
+    public String layoutType;
 }
