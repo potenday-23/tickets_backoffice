@@ -55,6 +55,11 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    public Member getMemberByUserIdAndSocialType(String socialId, String SocialType) {
+        SocialType socialType = project.backend.domain.member.entity.SocialType.valueOf(SocialType);
+        return memberRepository.findFirstBySocialIdAndSocialType(socialId, socialType).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
     public Member patchMember(Long id, MemberPatchRequestDto memberPatchRequestDto) {
         Member member = verifiedMember(id).patchMember(memberPatchRequestDto);
         memberRepository.save(member);
@@ -75,7 +80,7 @@ public class MemberService {
     }
 
     public Member verifiedMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return memberRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
 }

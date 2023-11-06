@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         log.info(path);
         if (path.startsWith("/api/auth/kakao/login") || path.startsWith("/swagger-ui/") || path.startsWith("/backoffice")
                 || path.startsWith("/favicon.ico") || path.startsWith("/v3/api-docs") || path.startsWith("/api/tickets")
-                || path.startsWith("/api/tickets/**") || path.startsWith("/api/categorys")) {
+                || path.startsWith("/api/tickets/**") || path.startsWith("/api/categorys") || path.startsWith("/api/members")) {
             filterChain.doFilter(request, response);
             return;
         }

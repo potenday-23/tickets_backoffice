@@ -16,6 +16,8 @@ import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
 import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
+import project.backend.global.error.exception.BusinessException;
+import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
@@ -48,10 +50,27 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
+    @ApiOperation(
+            value = "Member 조회",
+            notes = "1. AccessToken으로 조회할 경우 : Header의 Authorization에 accessToken을 넣어주세요.\n" +
+                    "2. socialId와 socialType으로 조회할 경우 : ?socialId=abcdefg&socialType=KAKAO" +
+                    "" +
+                    " - 해당 Member 없을 경우 -> 400에러, code : U001, message : 사용자를 찾을 수 없습니다.\n" +
+                    " - socialType은 KAKAO와 APPLE만 가능합니다.")
     @GetMapping
     public ResponseEntity getMember(
-            @RequestHeader("Authorization") String accessToken) {
-        Member member = jwtService.getMemberFromAccessToken(accessToken);
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
+            @RequestParam(required = false) String socialId,
+            @RequestParam(required = false) String socialType) {
+
+        Member member;
+        if (accessToken != null) {
+            member = jwtService.getMemberFromAccessToken(accessToken);
+        } else if (socialId != null && socialType != null) {
+            member = memberService.getMemberByUserIdAndSocialType(socialId, socialType);
+        } else {
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
+        }
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(member);
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
@@ -76,7 +95,7 @@ public class MemberController {
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request,
             @RequestPart(value = "categorys", required = false) List<String> categorys
-            ) { // todo : 중복 검사 로직 작성하기
+    ) { // todo : 중복 검사 로직 작성하기
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         if (request == null) {
             request = MemberPatchRequestDto.builder().build();
