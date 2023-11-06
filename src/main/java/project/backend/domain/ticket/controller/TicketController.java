@@ -105,6 +105,41 @@ public class TicketController {
                     " - &start=2023-11-03\n" +
                     " - &end=2023-11-05\n" +
                     " - &search=레미제라블\n" +
+                    "- Header['Authorization'] : 토큰 값\n" +
+                    "1. Authorization과 categorys를 입력할 경우, 유저의 온보딩 카테고리보다 categorys로 입력한 카테고리가 필터의 우선순위를 가집니다.\n" +
+                    "2. start, end가 period보다 우선순위를 가집니다.\n" +
+                    "3. start, end 두 값을 동시에 적지 않으면 filter 기능이 동작하지 않습니다.(에러는 발생하지 않습니다.)\n" +
+                    "4. 전체 파라미터와 헤더는 필수 값이 아닙니다.")
+    @GetMapping("/total")
+    public ResponseEntity getTotalTicketList(
+            @RequestParam(value = "categorys", required = false) List<String> categorys,
+            @RequestParam(value = "period", required = false) String period, // 일주일(week), 한달(month), 6개월(6month), 하루(day)
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestHeader(value = "Authorization", required = false) String accessToken
+    ) {
+        if (categorys == null && accessToken != null) {
+            categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
+        }
+
+        List<Ticket> ticketList = ticketService.getTotalTicketList(categorys, period, start, end, search == null ? "" : search);
+        List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
+    }
+
+    /**
+     * 회원 인증 받지 않아도 조회 가능한 api
+     *
+     * @return
+     */
+    @ApiOperation(
+            value = "둘러보기 티켓 조회 - 전체 공개만 ",
+            notes = " - ?categorys=영화,뮤지컬\n" +
+                    " - &period=week    **[week, month, 6month, day로 조회 가능]**\n" +
+                    " - &start=2023-11-03\n" +
+                    " - &end=2023-11-05\n" +
+                    " - &search=레미제라블\n" +
                     " - &mode=mine\n" +
                     "- Header['Authorization'] : 토큰 값\n" +
                     "1. Authorization과 categorys를 입력할 경우, 유저의 온보딩 카테고리보다 categorys로 입력한 카테고리가 필터의 우선순위를 가집니다.\n" +
@@ -112,28 +147,20 @@ public class TicketController {
                     "3. start, end 두 값을 동시에 적지 않으면 filter 기능이 동작하지 않습니다.(에러는 발생하지 않습니다.)\n" +
                     "4. mode=mine을 할 경우 내 티켓만 조회할 수 있습니다.(Authorization토큰이 있어야 동작합니다.)" +
                     "5. 전체 파라미터와 헤더는 필수 값이 아닙니다.")
-    @GetMapping
-    public ResponseEntity getTicketList(
+    @GetMapping("/my")
+    public ResponseEntity getMyTicketList(
             @RequestParam(value = "categorys", required = false) List<String> categorys,
             @RequestParam(value = "period", required = false) String period, // 일주일(week), 한달(month), 6개월(6month), 하루(day)
             @RequestParam(value = "start", required = false) String start,
             @RequestParam(value = "end", required = false) String end,
             @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "mode", required = false) String mode, // mine
-            @RequestHeader(value = "Authorization", required = false) String accessToken
+            @RequestHeader(value = "Authorization") String accessToken
     ) {
-        if (categorys == null && accessToken != null) {
-            categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
-        }
+//        if (categorys == null && accessToken != null) {
+//            categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
+//        }
 
-        List<Member> members = new ArrayList<>();
-        if (Objects.equals(mode, "mine") && accessToken != null) {
-            members.add(jwtService.getMemberFromAccessToken(accessToken));
-        } else {
-            members = memberRepository.findAll();
-        }
-
-        List<Ticket> ticketList = ticketService.getTicketList(categorys, period, start, end, search == null ? "" : search, members);
+        List<Ticket> ticketList = ticketService.getMyTicketList(categorys, period, start, end, search == null ? "" : search, jwtService.getMemberFromAccessToken(accessToken));
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }

@@ -75,8 +75,12 @@ public class TicketService {
         throw new BusinessException(ErrorCode.TICKET_VIEW_FAIL);
     }
 
-    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search, List<Member> members) {
-        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end), search, members);
+    public List<Ticket> getTotalTicketList(List<String> categorys, String period, String start, String end, String search) {
+        return ticketRepository.getTotalTicketList(categorys, getStartAndEnd(period, start, end), search);
+    }
+
+    public List<Ticket> getMyTicketList(List<String> categorys, String period, String start, String end, String search, Member member) {
+        return ticketRepository.getMyTicketList(categorys, getStartAndEnd(period, start, end), search, member);
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto, String accessToken) {

@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface TicketRepositoryCustom {
 
-    List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, List<Member> members);
+    List<Ticket> getTotalTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search);
+    List<Ticket> getMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member);
+
     List<MemberStatisticsResponseDto> getStatisticsList(Member member);
 }

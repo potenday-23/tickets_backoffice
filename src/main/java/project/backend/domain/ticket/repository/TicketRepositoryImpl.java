@@ -21,15 +21,13 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, List<Member> members) {
+    public List<Ticket> getTotalTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search) {
         if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
                             ticket.title.contains(search),
-                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)),
-                            ticket.member.in(members)
+                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1))
                     )
-                    .join(ticket.member).on(member.in(members))
                     .orderBy(ticket.ticketDate.desc())
                     .fetch();
         }
@@ -39,8 +37,31 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
                             ticket.category.name.in(categorys),
                             ticket.title.contains(search),
+                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1))
+                    )
+                    .orderBy(ticket.ticketDate.desc())
+                    .fetch();
+        }
+    }
+
+    @Override
+    public List<Ticket> getMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member) {
+        if (categorys == null || categorys.size() == 0) {
+            return queryFactory.selectFrom(ticket)
+                    .where(ticket.title.contains(search),
                             ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)),
-                            ticket.member.in(members)
+                            ticket.member.eq(member)
+                    )
+                    .orderBy(ticket.ticketDate.desc())
+                    .fetch();
+        }
+
+        else {
+            return queryFactory.selectFrom(ticket)
+                    .where(ticket.category.name.in(categorys),
+                            ticket.title.contains(search),
+                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)),
+                            ticket.member.eq(member)
                     )
                     .orderBy(ticket.ticketDate.desc())
                     .fetch();
