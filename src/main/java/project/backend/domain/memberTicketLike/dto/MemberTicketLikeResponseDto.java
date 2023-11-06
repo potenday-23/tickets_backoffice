@@ -11,8 +11,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberTicketLikeResponseDto {
-    public MemberResponseDto member;
-    public TicketResponseDto ticket;
-    public LocalDateTime createdDate;
-    public LocalDateTime updatedDate;
+    public Boolean status;
 }

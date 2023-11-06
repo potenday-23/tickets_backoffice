@@ -12,10 +12,14 @@ import project.backend.domain.memberTicketLike.dto.MemberTicketLikeResponseDto;
 import project.backend.domain.memberTicketLike.mapper.MemberTicketLikeMapper;
 import project.backend.domain.memberTicketLike.service.MemberTicketLikeService;
 import project.backend.domain.memberTicketLike.entity.MemberTicketLike;
+import project.backend.domain.ticket.dto.TicketResponseDto;
+import project.backend.domain.ticket.entity.Ticket;
+import project.backend.domain.ticket.mapper.TicketMapper;
 
+import javax.validation.constraints.Positive;
 import java.util.List;
 
-@Api(tags = "로그인 API")
+@Api(tags = "찜하기 API")
 @RestController
 @RequestMapping("/api/likes")
 @RequiredArgsConstructor
@@ -23,25 +27,44 @@ public class MemberTicketLikeController {
 
     private final MemberTicketLikeService memberTicketLikeService;
     private final MemberTicketLikeMapper memberTicketLikeMapper;
+    private final TicketMapper ticketMapper;
 
 
-    @PostMapping
-    public ResponseEntity postMemberTicketLike(@RequestBody MemberTicketLikePostRequestDto memberTicketLikePostRequestDto) {
-        MemberTicketLike memberTicketLike = memberTicketLikeService.createMemberTicketLike(memberTicketLikePostRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberTicketLikeMapper.memberTicketLikeToMemberTicketLikeResponseDto(memberTicketLike));
+    @ApiOperation(
+            value = "찜하기/찜 취소하기",
+            notes = " - 찜이 되어있으면 -> 찜을 취소한다.\n" +
+                    " - 찜이 되어있지 않으면 -> 찜을 한다.\n" +
+                    " - 찜 상태 : true\n" +
+                    " - 찜 안하기 상태 : false")
+    @PostMapping("/{ticketId}")
+    public ResponseEntity postMemberTicketLike(
+            @Positive @PathVariable Long ticketId,
+            @RequestHeader(value = "Authorization") String accessToken) {
+        MemberTicketLikeResponseDto memberTicketLikeResponseDto = MemberTicketLikeResponseDto.builder().status(memberTicketLikeService.changeMemberTicketLike(ticketId, accessToken)).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberTicketLikeResponseDto);
     }
 
-    @ApiOperation(value = "공지 목록")
-    @GetMapping("/{memberTicketLikeId}")
-    public ResponseEntity getMemberTicketLike(@PathVariable Long memberTicketLikeId) {
-        MemberTicketLikeResponseDto memberTicketLikeResponseDto = memberTicketLikeMapper.memberTicketLikeToMemberTicketLikeResponseDto(memberTicketLikeService.getMemberTicketLike(memberTicketLikeId));
+    @ApiOperation(
+            value = "찜 상태 확인하기",
+            notes = " - 찜 상태 : true\n" +
+                    " - 찜 안하기 상태 : false")
+    @GetMapping("/{ticketId}")
+    public ResponseEntity getMemberTicketLike(
+            @Positive @PathVariable Long ticketId,
+            @RequestHeader(value = "Authorization") String accessToken) {
+        MemberTicketLikeResponseDto memberTicketLikeResponseDto = MemberTicketLikeResponseDto.builder().status(memberTicketLikeService.getMemberTicketLike(ticketId, accessToken)).build();
         return ResponseEntity.status(HttpStatus.OK).body(memberTicketLikeResponseDto);
     }
 
+    @ApiOperation(
+            value = "나의 찜 목록 확인하기",
+            notes = "나의 찜 목록 확인하기")
     @GetMapping
-    public ResponseEntity getMemberTicketLikeList() {
-        List<MemberTicketLikeResponseDto> memberTicketLikeResponseDtoList = memberTicketLikeMapper.memberTicketLikesToMemberTicketLikeResponseDtos(memberTicketLikeService.getMemberTicketLikeList());
-        return ResponseEntity.status(HttpStatus.OK).body(memberTicketLikeResponseDtoList);
+    public ResponseEntity getMemberTicketLikeList(
+            @RequestHeader(value = "Authorization") String accessToken) {
+        List<Ticket> ticketList = memberTicketLikeService.getMemberTicketLikeList(accessToken);
+        List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 
     @DeleteMapping("/{memberTicketLikeId}")
