@@ -9,6 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 public class MemberStatisticsResponseDto {
     private String category;
-    private Integer categoryCnt;
+    private Long categoryCnt;
     private Double categoryPercent;
 }

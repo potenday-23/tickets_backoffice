@@ -55,14 +55,14 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
         List<Tuple> categoryCountList = queryFactory
                 .select(ticket.category.name, ticket.count())
                 .from(ticket)
-                .join(ticket.category)
+                .groupBy(ticket.category)
                 .where(ticket.member.eq(member))
                 .fetch();
 
         for(Tuple categoryCount : categoryCountList) {
             memberStatisticsResponseDtoList.add(MemberStatisticsResponseDto.builder()
                     .category(categoryCount.get(0, String.class))
-                    .categoryCnt(categoryCount.get(0, Integer.class))
+                    .categoryCnt(categoryCount.get(1, Long.class))
                     .build());
         }
         return memberStatisticsResponseDtoList;
