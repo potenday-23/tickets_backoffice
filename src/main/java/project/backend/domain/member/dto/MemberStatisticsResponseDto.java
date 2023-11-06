@@ -8,5 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberStatisticsResponseDto {
-    private String hello;
+    private String category;
+    private Integer categoryCnt;
+    private Double categoryPercent;
 }

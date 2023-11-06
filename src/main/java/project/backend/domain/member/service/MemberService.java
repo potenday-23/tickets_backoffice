@@ -98,9 +98,9 @@ public class MemberService {
         return member;
     }
 
-    public MemberStatisticsResponseDto getMemberStatistics(Member member) {
-        // 전체 중 몇 퍼센트 사용했는지?
-        return null;
+    public List<MemberStatisticsResponseDto> getMemberStatistics(Member member) {
+        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = ticketRepository.getStatisticsList(member);
+        return memberStatisticsResponseDtoList;
     }
 
     public void deleteMember(Long id) {

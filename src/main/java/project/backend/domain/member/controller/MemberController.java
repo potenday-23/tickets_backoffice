@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
-import project.backend.domain.member.dto.MemberPostRequestDto;
 import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
@@ -18,9 +17,6 @@ import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.LogoutTokenService;
 import project.backend.domain.member.service.MemberService;
-import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
-import project.backend.domain.ticket.repository.TicketRepository;
-import project.backend.domain.ticket.service.TicketService;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
@@ -53,8 +49,8 @@ public class MemberController {
     public ResponseEntity getStatistics(
             @RequestHeader("Authorization") String accessToken) {
         Member member = jwtService.getMemberFromAccessToken(accessToken);
-        MemberStatisticsResponseDto memberStatisticsResponseDto = memberService.getMemberStatistics(member);
-        return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDto);
+        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member);
+        return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
     }
 
     @ApiOperation(
@@ -133,7 +129,6 @@ public class MemberController {
     @GetMapping("/logout")
     public ResponseEntity logoutMember(
             @RequestHeader("Authorization") String accessToken) { // todo : header 안 넣으면 나오는 에러 문구 수정하기
-        System.out.println("여기");
         logoutTokenService.memberLogout(accessToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

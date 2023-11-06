@@ -1,18 +1,21 @@
 package project.backend.domain.category.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import project.backend.domain.category.entity.Category;
 import project.backend.domain.category.repository.CategoryRepository;
 
-@Component
 @RequiredArgsConstructor
-public class CategoryInitService implements CommandLineRunner {
+@Component
+public class CategoryInitService implements ApplicationRunner {
+
     private final CategoryRepository categoryRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(ApplicationArguments args) throws Exception {
         if(categoryRepository.findAll().size() == 0) {
             categoryRepository.save(Category.builder().name("영화").build());
             categoryRepository.save(Category.builder().name("뮤지컬").build());
