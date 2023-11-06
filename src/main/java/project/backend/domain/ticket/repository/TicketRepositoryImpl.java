@@ -15,11 +15,11 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList) {
+    public List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search) {
         if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
-                            ticket.title.contains("레"),
+                            ticket.title.contains(search),
                             ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)))
                     .orderBy(ticket.ticketDate.desc())
                     .fetch();
@@ -29,7 +29,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
                             ticket.category.name.in(categorys),
-                            ticket.title.contains("레"),
+                            ticket.title.contains(search),
                             ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1))
                     )
                     .orderBy(ticket.ticketDate.desc())

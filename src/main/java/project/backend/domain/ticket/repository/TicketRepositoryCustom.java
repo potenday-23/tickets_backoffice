@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface TicketRepositoryCustom {
 
-    List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList);
+    List<Ticket> getTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search);
 }

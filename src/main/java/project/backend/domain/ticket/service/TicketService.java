@@ -57,8 +57,8 @@ public class TicketService {
         return verifiedTicket(id);
     }
 
-    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end) {
-        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end));
+    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search) {
+        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end), search);
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {

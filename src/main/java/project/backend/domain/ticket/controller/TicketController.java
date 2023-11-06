@@ -91,6 +91,7 @@ public class TicketController {
                     "- ?period=week    **[week, month, 6month, day로 조회 가능]**\n" +
                     "- ?start=2023-11-03\n" +
                     "- ?end=2023-11-05\n" +
+                    "- ?search=레미제라블\n" +
                     "- Header['Authorization'] : 토큰 값\n" +
                     "1. Authorization과 categorys를 입력할 경우, 유저의 온보딩 카테고리보다 categorys로 입력한 카테고리가 필터의 우선순위를 가집니다.\n" +
                     "2. start, end가 period보다 우선순위를 가집니다.\n" +
@@ -102,12 +103,13 @@ public class TicketController {
             @RequestParam(value = "period", required = false) String period, // 일주일(week), 한달(month), 6개월(6month), 하루(day)
             @RequestParam(value = "start", required = false) String start,
             @RequestParam(value = "end", required = false) String end,
+            @RequestParam(value = "search", required = false) String search,
             @RequestHeader(value = "Authorization", required = false) String accessToken
     ) {
         if (categorys == null && accessToken != null) {
             categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
         }
-        List<Ticket> ticketList = ticketService.getTicketList(categorys, period, start, end);
+        List<Ticket> ticketList = ticketService.getTicketList(categorys, period, start, end, search == null ? "" : search);
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
