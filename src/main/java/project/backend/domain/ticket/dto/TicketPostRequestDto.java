@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TicketPostRequestDto {
+    @NotNull(message = "제목을 입력해야 합니다.")
+    public String title;
     public String imageUrl;
     public String ticketImageUrl;
     @NotNull(message = "날짜를 입력해야 합니다.")

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TicketResponseDto {
     public Long id;
+    public String title;
     public String imageUrl;
     public String ticketImageUrl;
     public LocalDateTime ticketDate;

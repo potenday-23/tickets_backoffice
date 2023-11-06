@@ -41,6 +41,7 @@ public class TicketController {
                     " - image : MultipartFile 입력(사용자가 추가한 이미지)\n" +
                     " - ticketImage : MultipartFile 입력(티켓 완성본 이미지)\n" +
                     " - request : {\n" +
+                    "    \"title\" : \"레미제라블\",\n" +
                     "    \"ticketDate\" : \"2023-11-04T16:26:39.098\",\n" +
                     "    \"rating\" : 1,\n" +
                     "    \"memo\" : \"재미없는 공연이였다.\",\n" +

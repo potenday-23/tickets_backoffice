@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor // todo : AllArgsConstructor는 무슨 뜻일까
 public class TicketPatchRequestDto {
+    public String title;
     public String imageUrl;
     public String ticketImageUrl;
     public LocalDateTime ticketDate;

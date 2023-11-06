@@ -31,6 +31,7 @@ public class TicketService {
 
     public Ticket createTicket(TicketPostRequestDto ticketPostRequestDto) {
         Ticket ticket = Ticket.builder()
+                .title(ticketPostRequestDto.title)
                 .imageUrl(ticketPostRequestDto.imageUrl)
                 .ticketImageUrl(ticketPostRequestDto.ticketImageUrl)
                 .ticketDate(ticketPostRequestDto.ticketDate)

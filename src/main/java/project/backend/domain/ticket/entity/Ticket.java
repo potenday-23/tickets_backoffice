@@ -25,6 +25,8 @@ public class Ticket extends BaseEntity {
     @Column(name = "ticket_id")
     public Long id;
 
+    public String title;
+
     public String imageUrl;
 
     public String ticketImageUrl;
@@ -59,8 +61,9 @@ public class Ticket extends BaseEntity {
 
 
     @Builder
-    public Ticket(String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
+    public Ticket(String title, String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
                   String location, Integer price, String friend, IsPrivate isPrivate) {
+        this.title = title;
         this.imageUrl = imageUrl;
         this.ticketImageUrl = ticketImageUrl;
         this.ticketDate = ticketDate;
@@ -75,6 +78,7 @@ public class Ticket extends BaseEntity {
 
     // Patch
     public Ticket patchTicket(TicketPatchRequestDto ticketPatchRequestDto) {
+        this.title = Optional.ofNullable(ticketPatchRequestDto.getTitle()).orElse(this.title);
         this.imageUrl = Optional.ofNullable(ticketPatchRequestDto.getImageUrl()).orElse(this.imageUrl);
         this.ticketImageUrl = Optional.ofNullable(ticketPatchRequestDto.getTicketImageUrl()).orElse(this.ticketImageUrl);
         this.ticketDate = Optional.ofNullable(ticketPatchRequestDto.getTicketDate()).orElse(this.ticketDate);

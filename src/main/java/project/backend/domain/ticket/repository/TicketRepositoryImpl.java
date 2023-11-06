@@ -19,6 +19,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
         if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
+
                             ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1)))
                     .orderBy(ticket.ticketDate.desc())
                     .fetch();
