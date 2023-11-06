@@ -45,6 +45,9 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
+    @ApiOperation(
+            value = "Statistics 조회",
+            notes = " - Authorization 토큰 필수")
     @GetMapping("/statistics")
     public ResponseEntity getStatistics(
             @RequestHeader("Authorization") String accessToken) {
