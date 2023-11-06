@@ -121,7 +121,8 @@ public class MemberController {
     @ApiOperation(value = "로그아웃")
     @GetMapping("/logout")
     public ResponseEntity logoutMember(
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader("Authorization") String accessToken) { // todo : header 안 넣으면 나오는 에러 문구 수정하기
+        System.out.println("여기");
         logoutTokenService.memberLogout(accessToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
