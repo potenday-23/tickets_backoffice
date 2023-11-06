@@ -66,11 +66,14 @@ public class TicketService {
      */
     public Ticket getTicket(Long id, String accessToken) {
         Ticket ticket = verifiedTicket(id);
-        if (ticket.isPrivate == IsPrivate.PUBLIC || ticket.member == jwtService.getMemberFromAccessToken(accessToken)) {
+        if (ticket.isPrivate == IsPrivate.PUBLIC) {
             return ticket;
-        } else {
-            throw new BusinessException(ErrorCode.TICKET_VIEW_FAIL);
+        } else if (accessToken!=null) {
+            if (ticket.member == jwtService.getMemberFromAccessToken(accessToken)) {
+                return ticket;
+            }
         }
+        throw new BusinessException(ErrorCode.TICKET_VIEW_FAIL);
     }
 
     public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search, List<Member> members) {
