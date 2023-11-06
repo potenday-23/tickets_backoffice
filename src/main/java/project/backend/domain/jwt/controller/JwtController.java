@@ -38,7 +38,7 @@ public class JwtController {
             value = "React 방식 | 로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
             notes = " - userId : String으로 입력" +
                     " - profileUrl : String으로 url 입력")
-    @PostMapping("/kakao/login")
+    @PostMapping("/login")
     public ResponseEntity login(
             @RequestBody JwtRequestDto jwtRequestDto) {
         // 해당 kakao ID를 가진 Member 반환
