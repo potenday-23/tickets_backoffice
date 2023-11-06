@@ -29,8 +29,6 @@ public class Ticket extends BaseEntity {
 
     public String imageUrl;
 
-    public String ticketImageUrl;
-
     public LocalDateTime ticketDate;
 
     public Float rating;
@@ -63,11 +61,10 @@ public class Ticket extends BaseEntity {
 
 
     @Builder
-    public Ticket(String title, String imageUrl, String ticketImageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
+    public Ticket(String title, String imageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
                   String location, Integer price, String friend, IsPrivate isPrivate, String layoutType) {
         this.title = title;
         this.imageUrl = imageUrl;
-        this.ticketImageUrl = ticketImageUrl;
         this.ticketDate = ticketDate;
         this.rating = rating;
         this.memo = memo;
@@ -83,7 +80,6 @@ public class Ticket extends BaseEntity {
     public Ticket patchTicket(TicketPatchRequestDto ticketPatchRequestDto) {
         this.title = Optional.ofNullable(ticketPatchRequestDto.getTitle()).orElse(this.title);
         this.imageUrl = Optional.ofNullable(ticketPatchRequestDto.getImageUrl()).orElse(this.imageUrl);
-        this.ticketImageUrl = Optional.ofNullable(ticketPatchRequestDto.getTicketImageUrl()).orElse(this.ticketImageUrl);
         this.ticketDate = Optional.ofNullable(ticketPatchRequestDto.getTicketDate()).orElse(this.ticketDate);
         this.rating = (rating != 0) ? ticketPatchRequestDto.getRating() : this.rating;
         this.memo = Optional.ofNullable(ticketPatchRequestDto.getMemo()).orElse(this.memo);

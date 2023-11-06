@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class TicketPatchRequestDto {
     public String title;
     public String imageUrl;
-    public String ticketImageUrl;
     public LocalDateTime ticketDate;
     public Float rating;
     public String memo;

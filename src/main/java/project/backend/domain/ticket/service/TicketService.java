@@ -37,7 +37,6 @@ public class TicketService {
         Ticket ticket = Ticket.builder()
                 .title(ticketPostRequestDto.title)
                 .imageUrl(ticketPostRequestDto.imageUrl)
-                .ticketImageUrl(ticketPostRequestDto.ticketImageUrl)
                 .ticketDate(ticketPostRequestDto.ticketDate)
                 .rating(ticketPostRequestDto.rating)
                 .memo(ticketPostRequestDto.memo)

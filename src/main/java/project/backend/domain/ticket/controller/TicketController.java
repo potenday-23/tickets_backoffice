@@ -67,12 +67,10 @@ public class TicketController {
     public ResponseEntity postTicket(
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "image") MultipartFile image,
-            @RequestPart(value = "ticketImage") MultipartFile ticketImage,
             @Valid @RequestPart TicketPostRequestDto request) {
 
         // image, ticketImage 등록
         request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
-        request.setTicketImageUrl(imageService.updateImage(ticketImage, "Ticket", "ticketImageURl"));
 
         // 작성자 등록
         request.setMember(jwtService.getMemberFromAccessToken(accessToken));
