@@ -72,6 +72,7 @@ public class MemberController {
             throw new BusinessException(ErrorCode.INVALID_REQUEST);
         }
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(member);
+        memberResponseDto.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
