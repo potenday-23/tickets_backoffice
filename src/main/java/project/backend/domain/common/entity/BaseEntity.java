@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @MappedSuperclass // todo : 이거 왜 쓰는가
 @Getter
@@ -19,10 +20,10 @@ public abstract class BaseEntity { // todo : abstract 에 대해서 좀 더 알�
 
     @CreatedDate
     @Column(name = "created_date", updatable = false) // todo : 이건 머임
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @LastModifiedDate
     @Column(name = "updated_date", updatable = false)
-    private LocalDate updatedDate; //todo : 왜 private 인 것일까?
+    private LocalDateTime updatedDate; //todo : 왜 private 인 것일까?
 
 }
