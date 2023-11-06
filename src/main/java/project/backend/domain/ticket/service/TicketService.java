@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.domain.category.service.CategoryService;
+import project.backend.domain.member.entity.Member;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
@@ -57,8 +58,8 @@ public class TicketService {
         return verifiedTicket(id);
     }
 
-    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search) {
-        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end), search);
+    public List<Ticket> getTicketList(List<String> categorys, String period, String start, String end, String search, List<Member> members) {
+        return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end), search, members);
     }
 
     public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {
