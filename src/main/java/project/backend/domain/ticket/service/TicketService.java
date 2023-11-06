@@ -79,10 +79,14 @@ public class TicketService {
         return ticketRepository.getTicketList(categorys, getStartAndEnd(period, start, end), search, members);
     }
 
-    public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto) {
-        Ticket ticket = verifiedTicket(id).patchTicket(ticketPatchRequestDto);
-        ticketRepository.save(ticket);
-        return ticket;
+    public Ticket patchTicket(Long id, TicketPatchRequestDto ticketPatchRequestDto, String accessToken) {
+
+        Ticket ticket = verifiedTicket(id);
+        if (ticket.member == jwtService.getMemberFromAccessToken(accessToken)) {
+            ticket.patchTicket(ticketPatchRequestDto);
+            return ticketRepository.save(ticket);
+        }
+        throw new BusinessException(ErrorCode.TICKET_PATCH_FAIL);
     }
 
     public void deleteTicket(Long id, Member member) {

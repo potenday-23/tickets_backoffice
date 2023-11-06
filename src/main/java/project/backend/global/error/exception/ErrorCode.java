@@ -31,6 +31,7 @@ public enum ErrorCode {
     TICKET_NOT_FOUND(400, "T001", "티켓을 찾을 수 없습니다."),
     TICKET_DELETE_FAIL(400, "T002", "내 티켓만 삭제할 수 있습니다."),
     TICKET_VIEW_FAIL(400, "T003", "내 티켓 또는 전체 공개 티켓만 조회할 수 있습니다."),
+    TICKET_PATCH_FAIL(400, "T004", "내 티켓만 수정할 수 있습니다."),
 
     // Category
     CATEGORY_NOT_FOUND(400, "CA001", "카테고리를 찾을 수 없습니다."),

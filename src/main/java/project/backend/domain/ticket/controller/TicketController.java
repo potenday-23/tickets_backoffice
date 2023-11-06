@@ -61,7 +61,7 @@ public class TicketController {
                     "2. isPrivate는 PUBLIC, PRIVATE으로만 추가 가능합니다.\n" +
                     "3. rating은 별점으로, 0 ~ 5까지 소수점으로 입력할 수 있습니다.(n.5 권장)\n" +
                     "4. request는 application/json 형식입니다.\n" +
-                    "5. 필수 : 제목, 날짜, 메모, 별점, 이미지2개, 카테고리, 레이아웃 타입")
+                    "5. 필수 : 제목, 날짜, 메모, 별점, 이미지, 카테고리, 레이아웃 타입")
     @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity postTicket(
             @RequestHeader("Authorization") String accessToken,
@@ -138,12 +138,45 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 
+    @ApiOperation(
+            value = "티켓 수정하기",
+            notes = " - Header['Authorization'] : AccessToken값 입력\n" +
+                    " - image : MultipartFile 입력(사용자가 추가한 이미지)\n" +
+                    " - request : {\n" +
+                    "    \"title\" : \"레미제라블\",\n" +
+                    "    \"ticketDate\" : \"2023-11-04T16:26:39.098\",\n" +
+                    "    \"rating\" : 1,\n" +
+                    "    \"memo\" : \"재미없는 공연이였다.\",\n" +
+                    "    \"seat\" : \"E292\",\n" +
+                    "    \"location\" : \"서울시 서울스퀘어\",\n" +
+                    "    \"price\" : 15000,\n" +
+                    "    \"friend\" : \"김가영\",\n" +
+                    "    \"isPrivate\" : \"PUBLIC\",\n" +
+                    "    \"categoryName\" : \"기타\"\n" +
+                    "    \"layoutType\" : \"A유형\"\n" +
+                    "}\n" +
+                    "1. ticketDate는 다음과 같은 형식으로 추가해주세요\n" +
+                    "2. isPrivate는 PUBLIC, PRIVATE으로만 추가 가능합니다.\n" +
+                    "3. rating은 별점으로, 0 ~ 5까지 소수점으로 입력할 수 있습니다.(n.5 권장)\n" +
+                    "4. request는 application/json 형식입니다.\n" +
+                    "5. 필수 : 제목, 날짜, 메모, 별점, 이미지, 카테고리, 레이아웃 타입")
     @PatchMapping("/{ticketId}")
     public ResponseEntity patchTicket(
-            @PathVariable Long ticketId,
-            @RequestBody TicketPatchRequestDto ticketPatchRequestDto) {
-        TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticketService.patchTicket(ticketId, ticketPatchRequestDto));
-        return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDto);
+            @Positive @PathVariable Long ticketId,
+            @RequestHeader("Authorization") String accessToken,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @Valid @RequestPart TicketPatchRequestDto request) {
+
+        // image
+        if (image != null) {
+            request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
+        }
+        // Ticket 수정
+        Ticket ticket = ticketService.patchTicket(ticketId, request, accessToken);
+
+        // Ticket -> ResponseDto
+        TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticket);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ticketResponseDto);
     }
 
     @ApiOperation(
