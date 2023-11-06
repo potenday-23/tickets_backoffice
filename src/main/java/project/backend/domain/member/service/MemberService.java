@@ -60,25 +60,27 @@ public class MemberService {
      * @param nickname
      * @return
      */
+    @Transactional(readOnly = true)
     public void verifiedNickname(String nickname) {
         if (nickname != null && memberRepository.findAllByNickname(nickname).size() > 0) {
             throw new BusinessException(ErrorCode.NICKNAME_DUPLICATE);
         }
     }
 
+    @Transactional(readOnly = true)
     public Member getMemberBySocialIdAndSocialType(String socialId, SocialType socialType) {
         return memberRepository.findFirstBySocialIdAndSocialType(socialId, socialType).orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
+    @Transactional(readOnly = true)
     public Member getMember(Long id) {
         return verifiedMember(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Member> getMemberList() {
         return memberRepository.findAll();
     }
-
-
 
     public Member patchMember(Long id, MemberPatchRequestDto memberPatchRequestDto) {
         Member member = verifiedMember(id).patchMember(memberPatchRequestDto);

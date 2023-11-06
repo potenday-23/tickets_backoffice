@@ -79,18 +79,19 @@ public class MemberController {
 
     @ApiOperation(
             value = "닉네임 & 프로필 이미지 등록, 온보딩 기능",
-            notes = " - 닉네임 변경 원할 시 : request -> {\"nickname\" : \"가방이\"}\n" +
+            notes = " - 닉네임 변경 원할 시 : request -> {\"nickname\" : \"가방이\", \"marketingAgree\":\"AGREE\", \"pushAgree\":\"DISAGREE\"}\n" +
                     " - 프로필 이미지 변경 원할 시 : profileImage -> MultipartFile으로 파일 입력 \n" +
                     " - 온보딩 입력 & 수정 원힐 시 : categorys -> [\"기타\", \"영화\"] \n" +
-                    " - 아직 중복 검사 로직은 없습니다!\n" +
-                    " - 닉네임과 온보딩 입력란은 application/json형식으로 요청해주세요.(swagger에서는 작동하지 않습니다.)")
+                    " - 닉네임과 온보딩 입력란은 application/json형식으로 요청해주세요.(swagger에서는 작동하지 않습니다.)" +
+                    " - Header의 AccessToken만 필수 값이고, 나머지는 필수 값이 아님")
     @RequestMapping(method = RequestMethod.PATCH, consumes = "multipart/form-data")
     public ResponseEntity patchMember(
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request,
             @RequestPart(value = "categorys", required = false) List<String> categorys
-    ) { // todo : 중복 검사 로직 작성하기
+    ) {
+        memberService.verifiedNickname(request.getNickname());
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         if (request == null) {
             request = MemberPatchRequestDto.builder().build();
@@ -107,9 +108,11 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
 
+    @ApiOperation(value = "회원 탈퇴")
     @DeleteMapping("/{memberId}")
-    public ResponseEntity deleteMember(@PathVariable Long memberId) {
-        memberService.deleteMember(memberId);
+    public ResponseEntity deleteMember(
+            @RequestHeader("Authorization") String accessToken) {
+        memberService.deleteMember(jwtService.getMemberFromAccessToken(accessToken).getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }

@@ -45,7 +45,8 @@ public class JwtController {
                     " - categorys : [\"영화\", \"뮤지컬\"]\n" +
                     "1. request의 socialId, socialType은 필수\n" +
                     "2. profileUrl과 profileImage 파일이 동시에 있을 경우, profileImage가 등록됩니다.\n" +
-                    "3. marketingAgree와 pushAgree는 필수 아님. default 값은 DISAGREE")
+                    "3. marketingAgree와 pushAgree는 필수 아님. default 값은 DISAGREE\n" +
+                    "4. request와 categorys는 application/json 형식으로 요청 요망")
     @PostMapping("/login")
     public ResponseEntity login(
             @Valid @RequestPart JwtRequestDto request,
