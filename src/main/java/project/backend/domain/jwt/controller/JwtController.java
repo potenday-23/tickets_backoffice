@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.jwt.dto.KakaoUserInfo;
 import project.backend.domain.jwt.response.JwtResponse;
 import project.backend.domain.jwt.response.TokenResponse;
@@ -32,11 +33,37 @@ public class JwtController {
     private final JwtService jwtService;
     private final MemberMapper memberMapper;
 
+
     @ApiOperation(
-            value = "로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
+            value = "React 방식 | 로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
+            notes = " - userId : String으로 입력" +
+                    " - profileUrl : String으로 url 입력")
+    @PostMapping("/kakao/login")
+    public ResponseEntity login(
+            @RequestBody JwtRequestDto jwtRequestDto) {
+        // 해당 kakao ID를 가진 Member 반환
+        Member member = memberService.findMemberBySocialId(jwtRequestDto.getUserId(), jwtRequestDto.getProfileUrl());
+
+        // accessToken과 refreshToken발급
+        String accessToken = jwtService.getAccessToken(member); // 에러 발생
+        String refreshToken = member.getRefreshToken();
+
+        // 응답
+        MemberResponseDto memberResponse = memberMapper.memberToMemberResponseDto(member);
+        TokenResponse tokenResponse = TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken).build();
+        JwtResponse jwtResponse = JwtResponse.builder()
+                .token(tokenResponse)
+                .member(memberResponse).build();
+        return new ResponseEntity<>(jwtResponse, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(
+            value = "REST 방식 | 로그인 & 회원가입 기능(로그인, 회원가입 로직을 따로 나누지 않습니다.)",
             notes = " - 다음의 링크에서 사용 방법을 확인해 주세요 : https://www.notion.so/sideproject-unione/c9c895d9cc714cee89734d268560fe52")
-    @GetMapping("/kakao/login")
-    public ResponseEntity login(@RequestParam(value = "token", required = false) String token,
+    @GetMapping("/v2/kakao/login")
+    public ResponseEntity loginv2(@RequestParam(value = "token", required = false) String token,
                                 @RequestParam(value = "code", required = false) String code,
                                 @RequestParam(value = "redirect_url", required = false) String redirect_url) {
 
