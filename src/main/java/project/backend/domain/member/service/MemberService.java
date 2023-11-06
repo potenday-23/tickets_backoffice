@@ -17,6 +17,7 @@ import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class MemberService {
 
     /**
      * socialId와 socialType 기준 Member 반환
+     *
      * @param socialId
      * @param socialType
      * @return Member
@@ -42,6 +44,7 @@ public class MemberService {
 
     /**
      * socialId와 socialType를 가지고 있는 Member 생성
+     *
      * @param socialId
      * @param socialType
      * @return Memeber
@@ -58,6 +61,7 @@ public class MemberService {
 
     /**
      * 닉네임 중복 검사
+     *
      * @param nickname
      * @return
      */
@@ -92,7 +96,7 @@ public class MemberService {
     public Member onboardingMember(Long id, List<String> categorys) {
         Member member = verifiedMember(id);
         onboardingMemberCategoryService.deleteOnboardingMemberCategoryByMember(member);
-        for(String category : categorys) {
+        for (String category : categorys) {
             onboardingMemberCategoryService.createOnboardingMemberCategory(member, categoryService.verifiedCategory(category));
         }
         return member;
@@ -100,6 +104,9 @@ public class MemberService {
 
     public List<MemberStatisticsResponseDto> getMemberStatistics(Member member) {
         List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = ticketRepository.getStatisticsList(member);
+        for (int i = 0; memberStatisticsResponseDtoList.size() > i; i++) {
+            memberStatisticsResponseDtoList.get(i).setCategoryPercent(memberStatisticsResponseDtoList.get(i).getCategoryCnt().doubleValue()/memberStatisticsResponseDtoList.size());
+        }
         return memberStatisticsResponseDtoList;
     }
 
