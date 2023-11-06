@@ -58,9 +58,10 @@ public class MemberController {
     }
 
     @ApiOperation(
-            value = "Member 조회",
+            value = "Member 조회 & 닉네임 조회",
             notes = "1. AccessToken으로 조회할 경우 : Header의 Authorization에 accessToken을 넣어주세요.\n" +
-                    "2. socialId와 socialType으로 조회할 경우 : ?socialId=abcdefg&socialType=KAKAO" +
+                    "2. socialId와 socialType으로 조회할 경우 : ?socialId=abcdefg&socialType=KAKAO\n" +
+                    "3. nickname으로 조회할 경우 : ?nickname=닉네임입력" +
                     "" +
                     " - 해당 Member 없을 경우 -> 400에러, code : U001, message : 사용자를 찾을 수 없습니다.\n" +
                     " - socialType은 KAKAO와 APPLE만 가능합니다.")
@@ -68,7 +69,14 @@ public class MemberController {
     public ResponseEntity getMember(
             @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestParam(required = false) String socialId,
-            @RequestParam(required = false) SocialType socialType) {
+            @RequestParam(required = false) SocialType socialType,
+            @RequestParam String nickname) {
+
+        if (nickname != null) {
+            memberService.verifiedNickname(nickname);
+            return ResponseEntity.status(HttpStatus.OK).body(MemberNicknameResponseDto.builder().message("닉네임을 사용할 수 있습니다.").nickname(nickname).build());
+        }
+
 
         Member member;
         if (accessToken != null) {
@@ -120,16 +128,6 @@ public class MemberController {
         memberResponseDto.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
-
-    @ApiOperation(value = "닉네임 검사",
-                    notes = "?nickname=닉네임입력")
-    @GetMapping("/nickname")
-    public ResponseEntity verifiedNickname(
-            @RequestParam String nickname) {
-        verifiedNickname(nickname);
-        return ResponseEntity.status(HttpStatus.OK).body(MemberNicknameResponseDto.builder().message("닉네임을 사용할 수 있습니다.").nickname(nickname).build());
-    }
-
 
     @ApiOperation(value = "회원 탈퇴")
     @DeleteMapping
