@@ -44,7 +44,6 @@ public class TicketController {
             value = "티켓 생성하기",
             notes = " - Header['Authorization'] : AccessToken값 입력\n" +
                     " - image : MultipartFile 입력(사용자가 추가한 이미지)\n" +
-                    " - ticketImage : MultipartFile 입력(티켓 완성본 이미지)\n" +
                     " - request : {\n" +
                     "    \"title\" : \"레미제라블\",\n" +
                     "    \"ticketDate\" : \"2023-11-04T16:26:39.098\",\n" +
@@ -69,7 +68,7 @@ public class TicketController {
             @RequestPart(value = "image") MultipartFile image,
             @Valid @RequestPart TicketPostRequestDto request) {
 
-        // image, ticketImage 등록
+        // image
         request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
 
         // 작성자 등록
