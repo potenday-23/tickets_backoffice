@@ -48,9 +48,10 @@ public class MemberController {
             notes = " - Authorization 토큰 필수")
     @GetMapping("/statistics")
     public ResponseEntity getStatistics(
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader("Authorization") String accessToken,
+            @RequestParam(required = false) String month) {
         Member member = jwtService.getMemberFromAccessToken(accessToken);
-        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member);
+        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member, month);
         return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
     }
 

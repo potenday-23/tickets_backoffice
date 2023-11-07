@@ -9,6 +9,7 @@ import project.backend.domain.member.entity.QMember;
 import project.backend.domain.ticket.entity.IsPrivate;
 import project.backend.domain.ticket.entity.Ticket;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +70,9 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
     }
 
     @Override
-    public List<MemberStatisticsResponseDto> getStatisticsList(Member member) {
+    public List<MemberStatisticsResponseDto> getStatisticsList(Member member, String month) {
+        DecimalFormat df = new DecimalFormat("0.0");
+
 
         List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = new ArrayList<>();
 
@@ -85,6 +88,12 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
                     .category(categoryCount.get(0, String.class))
                     .categoryCnt(categoryCount.get(1, Long.class))
                     .build());
+        }
+
+        long resultCnt = memberStatisticsResponseDtoList.stream().mapToLong(MemberStatisticsResponseDto::getCategoryCnt).sum();
+        for (int i = 0; memberStatisticsResponseDtoList.size() > i; i++) {
+            Double percent = (memberStatisticsResponseDtoList.get(i).getCategoryCnt().doubleValue()/resultCnt) * 100;
+            memberStatisticsResponseDtoList.get(i).setCategoryPercent(Double.parseDouble(df.format(percent)));
         }
         return memberStatisticsResponseDtoList;
     }

@@ -105,22 +105,20 @@ public class MemberService {
         return member;
     }
 
-    public List<MemberStatisticsResponseDto> getMemberStatistics(Member member) {
-        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = ticketRepository.getStatisticsList(member);
-        for (int i = 0; memberStatisticsResponseDtoList.size() > i; i++) {
-            memberStatisticsResponseDtoList.get(i).setCategoryPercent(memberStatisticsResponseDtoList.get(i).getCategoryCnt().doubleValue()/memberStatisticsResponseDtoList.size());
-        }
-        return memberStatisticsResponseDtoList;
+    public List<MemberStatisticsResponseDto> getMemberStatistics(Member member, String month) {
+        return ticketRepository.getStatisticsList(member, month);
     }
 
     public MemberMyPageResponseDto getMyPage(Member member) {
+        // 통계
+        MemberStatisticsResponseDto memberStatisticsResponseDto = ticketRepository.getStatisticsList(member, null).get(0);
+        String statistics = memberStatisticsResponseDto.getCategory() + " " + memberStatisticsResponseDto.getCategoryPercent() + "%";
+
+        // 응답
         MemberMyPageResponseDto memberMyPageResponseDto = memberMapper.MemberToMemberMyPageResponseDto(member);
-        // 닉네임, 프로필, 내 티켓, 통계 보기, 좋아요한 티켓 수
         memberMyPageResponseDto.setMyTicketCount(member.getTickets().size());
-        memberMyPageResponseDto.setMyStatistics("영화 50%");
+        memberMyPageResponseDto.setMyStatistics(statistics);
         memberMyPageResponseDto.setMyLikeCount(member.getMemberTicketLikes().size());
-
-
 
         return memberMyPageResponseDto;
     }

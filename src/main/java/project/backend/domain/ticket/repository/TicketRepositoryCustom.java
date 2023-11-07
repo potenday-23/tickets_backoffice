@@ -10,6 +10,6 @@ public interface TicketRepositoryCustom {
     List<Ticket> getTotalTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search);
     List<Ticket> getMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member);
 
-    List<MemberStatisticsResponseDto> getStatisticsList(Member member);
+    List<MemberStatisticsResponseDto> getStatisticsList(Member member, String month);
 
 }
