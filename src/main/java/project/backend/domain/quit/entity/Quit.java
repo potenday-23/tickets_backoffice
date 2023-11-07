@@ -20,21 +20,21 @@ public class Quit extends BaseEntity {
     public Long id;
 
     @Column(name = "title")
-    public String title;
+    public String reason;
 
     @Column(name = "content")
-    public String content;
+    public Integer count;
 
     @Builder
-    public Quit(String title, String content){
-        this.title = title;
-        this.content = content;
+    public Quit(String reason){
+        this.reason = reason;
+        this.count = 0;
     }
 
     // Patch
     public Quit patchQuit(QuitPatchRequestDto quitPatchRequestDto){
-        this.title = Optional.ofNullable(quitPatchRequestDto.getTitle()).orElse(this.title);
-        this.content = Optional.ofNullable(quitPatchRequestDto.getContent()).orElse(this.content);
+        this.reason = Optional.ofNullable(quitPatchRequestDto.getReason()).orElse(this.reason);
+        this.count = Optional.ofNullable(quitPatchRequestDto.getCount()).orElse(this.count);
         return this;
     }
 }

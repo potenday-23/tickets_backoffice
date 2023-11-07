@@ -15,7 +15,7 @@ import project.backend.domain.quit.service.QuitService;
 
 import java.util.List;
 
-@Api(tags = "공지 API")
+@Api(tags = "탈퇴 API")
 @RestController
 @RequestMapping("/api/quits")
 @RequiredArgsConstructor
@@ -24,24 +24,27 @@ public class QuitController {
     private final QuitService quitService;
     private final QuitMapper quitMapper;
 
+    @PostMapping("/reasons")
+    public ResponseEntity getQuitList(
+            @RequestPart List<Long> quits) {
+        quitService.updateQuitReason(quits);
+        return ResponseEntity.status(HttpStatus.OK).body(quitMapper.quitsToQuitResponseDtos(quitService.getQuitList()));
+    }
+
+
+
+
+    @ApiOperation(value = "탈퇴 사유 목록")
+    @GetMapping
+    public ResponseEntity getQuitList() {
+        List<QuitResponseDto> quitResponseDtoList = quitMapper.quitsToQuitResponseDtos(quitService.getQuitList());
+        return ResponseEntity.status(HttpStatus.OK).body(quitResponseDtoList);
+    }
 
     @PostMapping
     public ResponseEntity postQuit(@RequestBody QuitPostRequestDto quitPostRequestDto) {
         Quit quit = quitService.createQuit(quitPostRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(quitMapper.quitToQuitResponseDto(quit));
-    }
-
-    @ApiOperation(value = "공지 목록")
-    @GetMapping("/{quitId}")
-    public ResponseEntity getQuit(@PathVariable Long quitId) {
-        QuitResponseDto quitResponseDto = quitMapper.quitToQuitResponseDto(quitService.getQuit(quitId));
-        return ResponseEntity.status(HttpStatus.OK).body(quitResponseDto);
-    }
-
-    @GetMapping
-    public ResponseEntity getQuitList() {
-        List<QuitResponseDto> quitResponseDtoList = quitMapper.quitsToQuitResponseDtos(quitService.getQuitList());
-        return ResponseEntity.status(HttpStatus.OK).body(quitResponseDtoList);
     }
 
     @PatchMapping("/{quitId}")

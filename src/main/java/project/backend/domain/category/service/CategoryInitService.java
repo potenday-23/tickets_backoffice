@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import project.backend.domain.category.entity.Category;
 import project.backend.domain.category.repository.CategoryRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Component
 public class CategoryInitService implements ApplicationRunner {
@@ -17,15 +20,19 @@ public class CategoryInitService implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         if(categoryRepository.findAll().size() == 0) {
-            categoryRepository.save(Category.builder().name("영화").build());
-            categoryRepository.save(Category.builder().name("뮤지컬").build());
-            categoryRepository.save(Category.builder().name("드라마").build());
-            categoryRepository.save(Category.builder().name("전시회").build());
-            categoryRepository.save(Category.builder().name("영화").build());
-            categoryRepository.save(Category.builder().name("팝업스토어").build());
-            categoryRepository.save(Category.builder().name("스포츠 경기").build());
-            categoryRepository.save(Category.builder().name("독서").build());
-            categoryRepository.save(Category.builder().name("기타").build());
+
+            List<Category> categoryList = new ArrayList<>();
+
+            categoryList.add(Category.builder().name("영화").build());
+            categoryList.add(Category.builder().name("뮤지컬").build());
+            categoryList.add(Category.builder().name("드라마").build());
+            categoryList.add(Category.builder().name("전시회").build());
+            categoryList.add(Category.builder().name("팝업스토어").build());
+            categoryList.add(Category.builder().name("스포츠 경기").build());
+            categoryList.add(Category.builder().name("독서").build());
+            categoryList.add(Category.builder().name("기타").build());
+
+            categoryRepository.saveAll(categoryList);
         }
     }
 }

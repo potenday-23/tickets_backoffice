@@ -9,8 +9,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuitResponseDto {
-    public String title;
-    public String content;
+    public Long id;
+    public String reason;
+    public Integer count;
     public LocalDateTime createdDate;
     public LocalDateTime updatedDate;
 }

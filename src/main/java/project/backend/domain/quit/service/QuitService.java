@@ -20,10 +20,17 @@ public class QuitService {
     private final QuitRepository quitRepository;
     private final QuitMapper quitMapper;
 
+    public void updateQuitReason(List<Long> quits) {
+        for (Long quitId : quits) {
+            Quit quit = verifiedQuit(quitId);
+            quit.patchQuit(QuitPatchRequestDto.builder().count(quit.getCount() + 1).build());
+            quitRepository.save(quit);
+        }
+    }
+
     public Quit createQuit(QuitPostRequestDto quitPostRequestDto){
         Quit quit = Quit.builder()
-                .title(quitPostRequestDto.getTitle())
-                .content(quitPostRequestDto.getContent()).build();
+                .reason(quitPostRequestDto.getReason()).build();
         quitRepository.save(quit);
         return quit;
     }
