@@ -8,8 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
-import project.backend.domain.member.entity.Member;
-import project.backend.domain.member.repository.MemberRepository;
+import project.backend.domain.memberTicketLike.service.MemberTicketLikeService;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
@@ -20,11 +19,7 @@ import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,7 +32,7 @@ public class TicketController {
     private final TicketMapper ticketMapper;
     private final ImageService imageService;
     private final JwtService jwtService;
-    private final MemberRepository memberRepository;
+    private final MemberTicketLikeService memberTicketLikeService;
 
 
     @ApiOperation(
@@ -126,6 +121,15 @@ public class TicketController {
 
         List<Ticket> ticketList = ticketService.getTotalTicketList(categorys, period, start, end, search == null ? "" : search);
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
+
+        // 좋아요 여부 추가
+        if (accessToken != null) {
+            for (TicketResponseDto ticketResponseDto : ticketResponseDtoList) {
+                ticketResponseDto.setIsLike(memberTicketLikeService.getMemberTicketLike(ticketResponseDto.getId(), accessToken));
+            }
+        } else {
+            ticketResponseDtoList.forEach(t -> t.setIsLike(false));
+        }
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 

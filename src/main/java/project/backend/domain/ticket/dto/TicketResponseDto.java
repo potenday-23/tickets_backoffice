@@ -25,6 +25,7 @@ public class TicketResponseDto {
     public String friend;
     public String ticketType;
     public String layoutType;
+    public Boolean isLike;
     public IsPrivate isPrivate;
     public CategoryResponseDto category;
     public MemberResponseDto member;
