@@ -55,7 +55,8 @@ public class TicketController {
                     "    \"friend\" : \"김가영\",\n" +
                     "    \"isPrivate\" : \"PUBLIC\",\n" +
                     "    \"categoryName\" : \"기타\"\n" +
-                    "    \"layoutType\" : \"A유형\"\n" +
+                    "    \"ticketType\" : \"A\"\n" +
+                    "    \"layoutType\" : \"B\"\n" +
                     "}\n" +
                     "1. ticketDate는 다음과 같은 형식으로 추가해주세요\n" +
                     "2. isPrivate는 PUBLIC, PRIVATE으로만 추가 가능합니다.\n" +

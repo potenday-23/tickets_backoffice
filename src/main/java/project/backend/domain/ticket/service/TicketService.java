@@ -45,6 +45,7 @@ public class TicketService {
                 .price(ticketPostRequestDto.price)
                 .friend(ticketPostRequestDto.friend)
                 .isPrivate(ticketPostRequestDto.isPrivate)
+                .ticketType(ticketPostRequestDto.ticketType)
                 .layoutType(ticketPostRequestDto.layoutType)
                 .build();
 

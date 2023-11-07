@@ -33,6 +33,8 @@ public class TicketPatchRequestDto {
     public IsPrivate isPrivate;
     @NotNull(message = "카테고리명을 선택해야 합니다.")
     public String categoryName;
+    @NotNull(message = "티켓 타입을 선택해야 합니다.")
+    public String ticketType;
     @NotNull(message = "레이아웃 타입을 선택해야 합니다.")
     public String layoutType;
 }
