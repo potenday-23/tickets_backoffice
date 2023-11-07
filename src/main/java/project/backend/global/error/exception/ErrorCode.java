@@ -37,7 +37,7 @@ public enum ErrorCode {
     // Category
     CATEGORY_NOT_FOUND(400, "CA001", "카테고리를 찾을 수 없습니다."),
 
-    // Notice
+    // Quit
     NOTICE_NOT_FOUND(400, "N001", "공지를 찾을 수 없습니다.")
 
     ;
