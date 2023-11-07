@@ -58,7 +58,7 @@ public class MemberController {
     }
 
     @ApiOperation(
-            value = "Member 조회 & 닉네임 조회",
+            value = "Member 조회 & 닉네임 조회(중복 검사)",
             notes = "1. AccessToken으로 조회할 경우 : Header의 Authorization에 accessToken을 넣어주세요.\n" +
                     "2. socialId와 socialType으로 조회할 경우 : ?socialId=abcdefg&socialType=KAKAO\n" +
                     "3. nickname으로 조회할 경우 : ?nickname=닉네임입력" +
@@ -70,7 +70,7 @@ public class MemberController {
             @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestParam(required = false) String socialId,
             @RequestParam(required = false) SocialType socialType,
-            @RequestParam String nickname) {
+            @RequestParam(required = false) String nickname) {
 
         if (nickname != null) {
             memberService.verifiedNickname(nickname);
