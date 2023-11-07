@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_TYPE_VALUE(400, "C005", " Invalid Type Value"),
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     INVALID_REQUEST(400, "C007", "요청이 잘못되었습니다."),
+    MONTH_FORMAT_BAD_REQUEST(400, "C008", "월별 조회는 yyyy-mm 형식으로 맞춰야 합니다."),
 
 
     // S3

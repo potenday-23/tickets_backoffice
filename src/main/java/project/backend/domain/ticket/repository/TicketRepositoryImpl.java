@@ -3,16 +3,24 @@ package project.backend.domain.ticket.repository;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.QMember;
 import project.backend.domain.ticket.entity.IsPrivate;
 import project.backend.domain.ticket.entity.Ticket;
+import project.backend.global.error.exception.BusinessException;
+import project.backend.global.error.exception.ErrorCode;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static project.backend.domain.ticket.entity.QTicket.ticket;
 import static project.backend.domain.member.entity.QMember.member;
@@ -71,17 +79,31 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
 
     @Override
     public List<MemberStatisticsResponseDto> getStatisticsList(Member member, String month) {
+
         DecimalFormat df = new DecimalFormat("0.0");
-
-
-        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime start = LocalDate.now().minusYears(100).atStartOfDay();
+        LocalDateTime end = LocalDate.now().atTime(LocalTime.MAX);
+        if (month != null) {
+            try {
+                LocalDate searchMonth = LocalDate.parse(month+"-01", dateTimeFormatter);
+                start = searchMonth.withDayOfMonth(1).atStartOfDay();
+                end = searchMonth.withDayOfMonth(searchMonth.lengthOfMonth()).atTime(LocalTime.MAX);
+            } catch (Exception e) {
+                throw new BusinessException(ErrorCode.MONTH_FORMAT_BAD_REQUEST);
+            }
+        }
 
         List<Tuple> categoryCountList = queryFactory
                 .select(ticket.category.name, ticket.count())
                 .from(ticket)
                 .groupBy(ticket.category)
-                .where(ticket.member.eq(member))
+                .where(ticket.member.eq(member),
+                        ticket.ticketDate.between(start, end))
+                .orderBy(ticket.count().desc())
                 .fetch();
+
+        List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = new ArrayList<>();
 
         for(Tuple categoryCount : categoryCountList) {
             memberStatisticsResponseDtoList.add(MemberStatisticsResponseDto.builder()
