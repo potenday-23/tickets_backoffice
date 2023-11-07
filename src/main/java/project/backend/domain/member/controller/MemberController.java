@@ -45,7 +45,8 @@ public class MemberController {
 
     @ApiOperation(
             value = "Statistics 조회",
-            notes = " - Authorization 토큰 필수")
+            notes = " - Authorization 토큰 필수\n" +
+                    " - month=2023-10(yyyy-mm형식)\n" )
     @GetMapping("/statistics")
     public ResponseEntity getStatistics(
             @RequestHeader("Authorization") String accessToken,

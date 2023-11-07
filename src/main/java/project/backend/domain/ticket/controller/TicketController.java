@@ -182,6 +182,7 @@ public class TicketController {
                     "    \"friend\" : \"김가영\",\n" +
                     "    \"isPrivate\" : \"PUBLIC\",\n" +
                     "    \"categoryName\" : \"기타\"\n" +
+                    "    \"ticketType\" : \"B유형\"\n" +
                     "    \"layoutType\" : \"A유형\"\n" +
                     "}\n" +
                     "1. ticketDate는 다음과 같은 형식으로 추가해주세요\n" +

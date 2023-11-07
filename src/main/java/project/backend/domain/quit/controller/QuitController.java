@@ -24,15 +24,16 @@ public class QuitController {
     private final QuitService quitService;
     private final QuitMapper quitMapper;
 
+    @ApiOperation(
+            value = "탈퇴 사유 update하기",
+            notes = " - quits : [1, 2, 3]" +
+                    " - 탈퇴 사유 목록을 조회 후, 해당 id를 list로 넣어주세요.")
     @PostMapping("/reasons")
-    public ResponseEntity getQuitList(
+    public ResponseEntity updateQuitReason(
             @RequestPart List<Long> quits) {
         quitService.updateQuitReason(quits);
         return ResponseEntity.status(HttpStatus.OK).body(quitMapper.quitsToQuitResponseDtos(quitService.getQuitList()));
     }
-
-
-
 
     @ApiOperation(value = "탈퇴 사유 목록")
     @GetMapping
