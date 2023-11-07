@@ -11,4 +11,5 @@ public interface TicketRepositoryCustom {
     List<Ticket> getMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member);
 
     List<MemberStatisticsResponseDto> getStatisticsList(Member member);
+
 }

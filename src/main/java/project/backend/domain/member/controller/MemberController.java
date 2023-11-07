@@ -9,10 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
-import project.backend.domain.member.dto.MemberNicknameResponseDto;
-import project.backend.domain.member.dto.MemberResponseDto;
-import project.backend.domain.member.dto.MemberPatchRequestDto;
-import project.backend.domain.member.dto.MemberStatisticsResponseDto;
+import project.backend.domain.member.dto.*;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.mapper.MemberMapper;
@@ -55,6 +52,17 @@ public class MemberController {
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member);
         return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
+    }
+
+    @ApiOperation(
+            value = "My Page - [닉네임, 프로필, 내 티켓, 통계 보기, 좋아요한 티켓 수]",
+            notes = " - Authorization 토큰 필수")
+    @GetMapping("/my-page")
+    public ResponseEntity getMyPage(
+            @RequestHeader("Authorization") String accessToken) {
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+        MemberMyPageResponseDto memberMyPageResponseDto = memberService.getMyPage(member);
+        return ResponseEntity.status(HttpStatus.OK).body(memberMyPageResponseDto);
     }
 
     @ApiOperation(

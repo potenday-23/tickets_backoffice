@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.backend.domain.category.service.CategoryService;
+import project.backend.domain.member.dto.MemberMyPageResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
 import project.backend.domain.member.entity.Agree;
@@ -11,6 +12,7 @@ import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.repository.MemberRepository;
+import project.backend.domain.memberTicketLike.repository.MemberTicketLikeRepository;
 import project.backend.domain.onboardingmembercategory.service.OnboardingMemberCategoryService;
 import project.backend.domain.ticket.repository.TicketRepository;
 import project.backend.global.error.exception.BusinessException;
@@ -28,6 +30,7 @@ public class MemberService {
     private final CategoryService categoryService;
     private final OnboardingMemberCategoryService onboardingMemberCategoryService;
     private final TicketRepository ticketRepository;
+    private final MemberTicketLikeRepository memberTicketLikeRepository;
 
 
     /**
@@ -108,6 +111,18 @@ public class MemberService {
             memberStatisticsResponseDtoList.get(i).setCategoryPercent(memberStatisticsResponseDtoList.get(i).getCategoryCnt().doubleValue()/memberStatisticsResponseDtoList.size());
         }
         return memberStatisticsResponseDtoList;
+    }
+
+    public MemberMyPageResponseDto getMyPage(Member member) {
+        MemberMyPageResponseDto memberMyPageResponseDto = memberMapper.MemberToMemberMyPageResponseDto(member);
+        // 닉네임, 프로필, 내 티켓, 통계 보기, 좋아요한 티켓 수
+        memberMyPageResponseDto.setMyTicketCount(member.getTickets().size());
+        memberMyPageResponseDto.setMyStatistics("영화 50%");
+        memberMyPageResponseDto.setMyLikeCount(member.getMemberTicketLikes().size());
+
+
+
+        return memberMyPageResponseDto;
     }
 
     public void deleteMember(Long id) {
