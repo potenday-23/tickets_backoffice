@@ -37,7 +37,7 @@ public class ImageService {
         String uploadFilePath = entityName + "/" + columnName; // 엔티티명.컬럼명 폴더가 만들어짐
 
         // File 이름 설정
-        String uploadFileName = getUploadFileName(file);
+        String uploadFileName = getUuidFileName(file);
 
         // Object MetaData
         ObjectMetadata metadata = new ObjectMetadata();
@@ -45,7 +45,7 @@ public class ImageService {
         metadata.setContentLength(file.getSize());
 
         try (InputStream inputStream = file.getInputStream()) {
-            String keyName = uploadFilePath + "/" + uploadFileName + ".jpg";
+            String keyName = uploadFilePath + "/" + uploadFileName;
 
             // S3에 폴더 및 파일 업로드
             amazonS3Client.putObject(new PutObjectRequest(bucket, keyName, inputStream, metadata));
@@ -57,13 +57,8 @@ public class ImageService {
         }
     }
 
-    public String getUploadFileName(MultipartFile file) {
-        String currentTime = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS").format(System.currentTimeMillis());
+    public String getUuidFileName(MultipartFile file) {
         String fileName = Optional.ofNullable(file.getOriginalFilename()).orElse("no name");
-        return getUuidFileName(fileName) + currentTime;
-    }
-
-    public String getUuidFileName(String fileName) {
         String ext = fileName.substring(fileName.indexOf(".") + 1);
         return UUID.randomUUID().toString() + "." + ext;
     }
