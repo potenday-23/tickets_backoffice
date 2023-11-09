@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import project.backend.domain.memberTicketLike.dto.MemberTicketLikePostRequestDto;
 import project.backend.domain.memberTicketLike.dto.MemberTicketLikeResponseDto;
@@ -15,6 +16,8 @@ import project.backend.domain.memberTicketLike.entity.MemberTicketLike;
 import project.backend.domain.ticket.dto.TicketResponseDto;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
+import project.backend.global.error.exception.BusinessException;
+import project.backend.global.error.exception.ErrorCode;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -38,8 +41,11 @@ public class MemberTicketLikeController {
                     " - 찜 안하기 상태 : false")
     @PostMapping("/{ticketId}")
     public ResponseEntity postMemberTicketLike(
-            @Positive @PathVariable Long ticketId,
-            @RequestHeader(value = "Authorization") String accessToken) {
+            @Positive @PathVariable(required = false) Long ticketId,
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(ticketId) || ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         MemberTicketLikeResponseDto memberTicketLikeResponseDto = MemberTicketLikeResponseDto.builder().status(memberTicketLikeService.changeMemberTicketLike(ticketId, accessToken)).build();
         return ResponseEntity.status(HttpStatus.CREATED).body(memberTicketLikeResponseDto);
     }
@@ -50,8 +56,11 @@ public class MemberTicketLikeController {
                     " - 찜 안하기 상태 : false")
     @GetMapping("/{ticketId}")
     public ResponseEntity getMemberTicketLike(
-            @Positive @PathVariable Long ticketId,
-            @RequestHeader(value = "Authorization") String accessToken) {
+            @Positive @PathVariable(required = false) Long ticketId,
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(ticketId) || ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         MemberTicketLikeResponseDto memberTicketLikeResponseDto = MemberTicketLikeResponseDto.builder().status(memberTicketLikeService.getMemberTicketLike(ticketId, accessToken)).build();
         return ResponseEntity.status(HttpStatus.OK).body(memberTicketLikeResponseDto);
     }
@@ -61,14 +70,20 @@ public class MemberTicketLikeController {
             notes = "나의 찜 목록 확인하기")
     @GetMapping
     public ResponseEntity getMemberTicketLikeList(
-            @RequestHeader(value = "Authorization") String accessToken) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         List<Ticket> ticketList = memberTicketLikeService.getMemberTicketLikeList(accessToken);
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 
     @DeleteMapping("/{memberTicketLikeId}")
-    public ResponseEntity deleteMemberTicketLike(@PathVariable Long memberTicketLikeId) {
+    public ResponseEntity deleteMemberTicketLike(@PathVariable(required = false) Long memberTicketLikeId) {
+        if (ObjectUtils.isEmpty(memberTicketLikeId)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         memberTicketLikeService.deleteMemberTicketLike(memberTicketLikeId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }

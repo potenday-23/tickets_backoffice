@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,8 @@ import project.backend.domain.member.dto.MemberResponseDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.mapper.MemberMapper;
 import project.backend.domain.member.service.MemberService;
+import project.backend.global.error.exception.BusinessException;
+import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
@@ -49,9 +52,13 @@ public class JwtController {
                     "4. request와 categorys는 application/json 형식으로 요청 요망")
     @PostMapping("/login")
     public ResponseEntity login(
-            @Valid @RequestPart JwtRequestDto request,
+            @Valid @RequestPart(required = false) JwtRequestDto request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @RequestPart(value = "categorys", required = false) List<String> categorys) {
+
+        if (ObjectUtils.isEmpty(request)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
 
         // 닉네임 중복 검사
         memberService.verifiedNickname(request.nickname);

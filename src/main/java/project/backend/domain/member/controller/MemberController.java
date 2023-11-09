@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
@@ -37,8 +38,8 @@ public class MemberController {
 
     @GetMapping("/{memberId}") // todo : 관리자 권한 있어야 실행 가능한 것으로 바꾸기
     public ResponseEntity getMember(
-            @RequestHeader("Authorization") String accessToken,
-            @PathVariable Long memberId) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
+            @PathVariable(required = false) Long memberId) {
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.getMember(memberId));
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
     }
@@ -49,8 +50,11 @@ public class MemberController {
                     " - month=2023-10(yyyy-mm형식)\n" )
     @GetMapping("/statistics")
     public ResponseEntity getStatistics(
-            @RequestHeader("Authorization") String accessToken,
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestParam(required = false) String month) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member, month);
         return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
@@ -61,7 +65,10 @@ public class MemberController {
             notes = " - Authorization 토큰 필수")
     @GetMapping("/my-page")
     public ResponseEntity getMyPage(
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         MemberMyPageResponseDto memberMyPageResponseDto = memberService.getMyPage(member);
         return ResponseEntity.status(HttpStatus.OK).body(memberMyPageResponseDto);
@@ -103,7 +110,10 @@ public class MemberController {
 
     @GetMapping("/list")
     public ResponseEntity getMemberList(
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         List<MemberResponseDto> memberResponseDtoList = memberMapper.membersToMemberResponseDtos(memberService.getMemberList());
         return ResponseEntity.status(HttpStatus.OK).body(memberResponseDtoList);
     }
@@ -117,11 +127,15 @@ public class MemberController {
                     " - Header의 AccessToken만 필수 값이고, 나머지는 필수 값이 아님")
     @RequestMapping(method = RequestMethod.PATCH, consumes = "multipart/form-data")
     public ResponseEntity patchMember(
-            @RequestHeader("Authorization") String accessToken,
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
             @Valid @RequestPart(value = "request", required = false) MemberPatchRequestDto request,
             @RequestPart(value = "categorys", required = false) List<String> categorys
     ) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
+
         memberService.verifiedNickname(request.getNickname());
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         if (request == null) {
@@ -142,7 +156,10 @@ public class MemberController {
     @ApiOperation(value = "회원 탈퇴")
     @DeleteMapping
     public ResponseEntity deleteMember(
-            @RequestHeader("Authorization") String accessToken) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         memberService.deleteMember(jwtService.getMemberFromAccessToken(accessToken).getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
@@ -150,7 +167,10 @@ public class MemberController {
     @ApiOperation(value = "로그아웃")
     @GetMapping("/logout")
     public ResponseEntity logoutMember(
-            @RequestHeader("Authorization") String accessToken) { // todo : header 안 넣으면 나오는 에러 문구 수정하기
+            @RequestHeader(value = "Authorization", required = false) String accessToken) { // todo : header 안 넣으면 나오는 에러 문구 수정하기
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
         logoutTokenService.memberLogout(accessToken);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
