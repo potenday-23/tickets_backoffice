@@ -51,6 +51,7 @@ public class TicketController {
                     "    \"location\" : \"서울시 서울스퀘어\",\n" +
                     "    \"price\" : 15000,\n" +
                     "    \"friend\" : \"김가영\",\n" +
+                    "    \"color\" : \"#102920\"\n" +
                     "    \"isPrivate\" : \"PUBLIC\",\n" +
                     "    \"categoryName\" : \"기타\"\n" +
                     "    \"ticketType\" : \"A\"\n" +
@@ -192,6 +193,7 @@ public class TicketController {
                     "    \"location\" : \"서울시 서울스퀘어\",\n" +
                     "    \"price\" : 15000,\n" +
                     "    \"friend\" : \"김가영\",\n" +
+                    "    \"color\" : \"#102920\"\n" +
                     "    \"isPrivate\" : \"PUBLIC\",\n" +
                     "    \"categoryName\" : \"기타\"\n" +
                     "    \"ticketType\" : \"B유형\"\n" +
