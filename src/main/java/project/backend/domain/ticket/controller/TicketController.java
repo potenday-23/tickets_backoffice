@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
@@ -15,6 +16,8 @@ import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
 import project.backend.domain.ticket.service.TicketService;
 import project.backend.domain.ticket.dto.TicketResponseDto;
+import project.backend.global.error.exception.BusinessException;
+import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
@@ -60,9 +63,13 @@ public class TicketController {
                     "5. 필수 : 제목, 날짜, 메모, 별점, 이미지, 카테고리, 레이아웃 타입")
     @RequestMapping(method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity postTicket(
-            @RequestHeader("Authorization") String accessToken,
-            @RequestPart(value = "image") MultipartFile image,
-            @Valid @RequestPart TicketPostRequestDto request) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            @Valid @RequestPart(required = false) TicketPostRequestDto request) {
+
+        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(image) || ObjectUtils.isEmpty(request)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
 
         // image
         request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
@@ -81,8 +88,12 @@ public class TicketController {
                     " - Authorization Header는 선택")
     @GetMapping("/{ticketId}")
     public ResponseEntity getTicket(
-            @Positive @PathVariable Long ticketId,
+            @Positive @PathVariable(required = false) Long ticketId,
             @RequestHeader(value = "Authorization", required = false) String accessToken) {
+
+        if (ObjectUtils.isEmpty(ticketId)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
 
         Ticket ticket = ticketService.getTicket(ticketId, accessToken);
         TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticket);
@@ -115,6 +126,7 @@ public class TicketController {
             @RequestParam(value = "search", required = false) String search,
             @RequestHeader(value = "Authorization", required = false) String accessToken
     ) {
+
         if (categorys == null && accessToken != null) {
             categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
         }
@@ -156,11 +168,11 @@ public class TicketController {
             @RequestParam(value = "start", required = false) String start,
             @RequestParam(value = "end", required = false) String end,
             @RequestParam(value = "search", required = false) String search,
-            @RequestHeader(value = "Authorization") String accessToken
+            @RequestHeader(value = "Authorization", required = false) String accessToken
     ) {
-//        if (categorys == null && accessToken != null) {
-//            categorys = jwtService.getMemberFromAccessToken(accessToken).getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
-//        }
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
 
         List<Ticket> ticketList = ticketService.getMyTicketList(categorys, period, start, end, search == null ? "" : search, jwtService.getMemberFromAccessToken(accessToken));
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
@@ -192,10 +204,14 @@ public class TicketController {
                     "5. 필수 : 제목, 날짜, 메모, 별점, 이미지, 카테고리, 레이아웃 타입")
     @PatchMapping("/{ticketId}")
     public ResponseEntity patchTicket(
-            @Positive @PathVariable Long ticketId,
-            @RequestHeader("Authorization") String accessToken,
+            @Positive @PathVariable(required = false) Long ticketId,
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
             @RequestPart(value = "image", required = false) MultipartFile image,
-            @Valid @RequestPart TicketPatchRequestDto request) {
+            @Valid @RequestPart(required = false) TicketPatchRequestDto request) {
+
+        if (ObjectUtils.isEmpty(ticketId) || ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(request)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
 
         // image
         if (image != null) {
@@ -214,8 +230,12 @@ public class TicketController {
             notes = "Header의 Authorization 필수")
     @DeleteMapping("/{ticketId}")
     public ResponseEntity deleteTicket(
-            @RequestHeader(value = "Authorization") String accessToken,
-            @PathVariable Long ticketId) {
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
+            @PathVariable(required = false) Long ticketId) {
+        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(ticketId)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
+
         ticketService.deleteTicket(ticketId, jwtService.getMemberFromAccessToken(accessToken));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
