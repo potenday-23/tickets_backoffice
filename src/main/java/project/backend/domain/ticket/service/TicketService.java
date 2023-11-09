@@ -44,6 +44,7 @@ public class TicketService {
                 .location(ticketPostRequestDto.location)
                 .price(ticketPostRequestDto.price)
                 .friend(ticketPostRequestDto.friend)
+                .color(ticketPostRequestDto.color)
                 .isPrivate(ticketPostRequestDto.isPrivate)
                 .ticketType(ticketPostRequestDto.ticketType)
                 .layoutType(ticketPostRequestDto.layoutType)

@@ -28,6 +28,7 @@ public class TicketPostRequestDto {
     public String location;
     @Min(value = 0, message = "0보다 작은 가격은 설정할 수 없습니다.")
     public Integer price;
+    public String color;
     public String friend;
     public IsPrivate isPrivate;
     public Member member;
