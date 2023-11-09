@@ -30,6 +30,7 @@ public class TicketPatchRequestDto {
     @Min(value = 0, message = "0보다 작은 가격은 설정할 수 없습니다.")
     public Integer price;
     public String friend;
+    public String color;
     public IsPrivate isPrivate;
     @NotNull(message = "카테고리명을 선택해야 합니다.")
     public String categoryName;

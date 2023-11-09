@@ -42,6 +42,7 @@ public class Ticket extends BaseEntity {
     public Integer price;
 
     public String friend;
+    public String color;
 
     public String ticketType;
     public String layoutType;
@@ -63,7 +64,7 @@ public class Ticket extends BaseEntity {
 
     @Builder
     public Ticket(String title, String imageUrl, LocalDateTime ticketDate, Float rating, String memo, String seat,
-                  String location, Integer price, String friend, IsPrivate isPrivate, String ticketType, String layoutType) {
+                  String location, Integer price, String friend, String color, IsPrivate isPrivate, String ticketType, String layoutType) {
         this.title = title;
         this.imageUrl = imageUrl;
         this.ticketDate = ticketDate;
@@ -73,6 +74,7 @@ public class Ticket extends BaseEntity {
         this.location = location;
         this.price = price;
         this.friend = friend;
+        this.color = color;
         this.isPrivate = isPrivate;
         this.ticketType = ticketType;
         this.layoutType = layoutType;
@@ -90,6 +92,7 @@ public class Ticket extends BaseEntity {
         this.price = (price != 0) ? ticketPatchRequestDto.getPrice() : this.price;
         this.friend = Optional.ofNullable(ticketPatchRequestDto.getFriend()).orElse(this.friend);
         this.isPrivate = Optional.ofNullable(ticketPatchRequestDto.getIsPrivate()).orElse(this.isPrivate);
+        this.color = Optional.ofNullable(ticketPatchRequestDto.getColor()).orElse(this.color);
         this.ticketType = Optional.ofNullable(ticketPatchRequestDto.getTicketType()).orElse(this.ticketType);
         this.layoutType = Optional.ofNullable(ticketPatchRequestDto.getLayoutType()).orElse(this.layoutType);
         return this;

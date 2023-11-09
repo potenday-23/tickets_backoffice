@@ -23,6 +23,7 @@ public class TicketResponseDto {
     public String location;
     public Integer price;
     public String friend;
+    public String color;
     public String ticketType;
     public String layoutType;
     public Boolean isLike;
