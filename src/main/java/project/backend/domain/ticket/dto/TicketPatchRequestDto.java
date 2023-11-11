@@ -1,5 +1,6 @@
 package project.backend.domain.ticket.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.ticket.entity.IsPrivate;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 public class TicketPatchRequestDto {
     public String title;
     public String imageUrl;
-    public LocalDateTime ticketDate;
+    public String ticketDate;
     @Min(value = 0, message = "0보다 작은 값은 별점으로 설정할 수 없습니다.")
     @Max(value = 5, message = "5보다 큰 값은 별점으로 설정할 수 없습니다.")
     public Float rating;
@@ -35,4 +36,5 @@ public class TicketPatchRequestDto {
     public String categoryName;
     public String ticketType;
     public String layoutType;
+    public LocalDateTime ticketLocalDateTime;
 }

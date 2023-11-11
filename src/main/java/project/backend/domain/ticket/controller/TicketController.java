@@ -25,6 +25,8 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static project.backend.global.validator.LocalDateTimeValidation.convertStringToLocalDateTime;
+
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
@@ -71,6 +73,9 @@ public class TicketController {
         if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(request) || (ObjectUtils.isEmpty(image) && ObjectUtils.isEmpty(request.getImageUrl()))){
             throw new BusinessException(ErrorCode.MISSING_REQUEST);
         }
+
+        // TicketDate 형식 검사 (ex - 2023-11-01T00:00:00)
+        request.setTicketLocalDateTime(convertStringToLocalDateTime(request.getTicketDate()));
 
         if (!ObjectUtils.isEmpty(image)) {
             request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
@@ -215,6 +220,9 @@ public class TicketController {
         if (ObjectUtils.isEmpty(ticketId) || ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(request)){
             throw new BusinessException(ErrorCode.MISSING_REQUEST);
         }
+
+        // TicketDate 형식 검사 (ex - 2023-11-01T00:00:00)
+        request.setTicketLocalDateTime(convertStringToLocalDateTime(request.getTicketDate()));
 
         // image
         if (image != null) {

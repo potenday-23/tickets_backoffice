@@ -13,6 +13,7 @@ public enum ErrorCode {
     HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
     INVALID_REQUEST(400, "C007", "요청이 잘못되었습니다."),
     MONTH_FORMAT_BAD_REQUEST(400, "C008", "월별 조회는 yyyy-mm 형식으로 맞춰야 합니다."),
+    LOCAL_DATE_TIME_VALIDATOR(400, "C009", "날짜 입력 형식을 확인해주세요. ex) 2023-11-01T00:00:00"),
 
 
     // S3

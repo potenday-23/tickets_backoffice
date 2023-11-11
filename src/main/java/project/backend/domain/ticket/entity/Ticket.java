@@ -84,7 +84,7 @@ public class Ticket extends BaseEntity {
     public Ticket patchTicket(TicketPatchRequestDto ticketPatchRequestDto) {
         this.title = Optional.ofNullable(ticketPatchRequestDto.getTitle()).orElse(this.title);
         this.imageUrl = Optional.ofNullable(ticketPatchRequestDto.getImageUrl()).orElse(this.imageUrl);
-        this.ticketDate = Optional.ofNullable(ticketPatchRequestDto.getTicketDate()).orElse(this.ticketDate);
+        this.ticketDate = Optional.ofNullable(ticketPatchRequestDto.getTicketLocalDateTime()).orElse(this.ticketDate);
         this.rating = (ticketPatchRequestDto.getRating()!= null && ticketPatchRequestDto.getRating() != 0) ? ticketPatchRequestDto.getRating() : this.rating;
         this.memo = Optional.ofNullable(ticketPatchRequestDto.getMemo()).orElse(this.memo);
         this.seat = Optional.ofNullable(ticketPatchRequestDto.getSeat()).orElse(this.seat);
