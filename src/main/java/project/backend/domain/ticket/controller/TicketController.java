@@ -145,7 +145,7 @@ public class TicketController {
         // 좋아요 여부 추가
         if (accessToken != null) {
             for (TicketResponseDto ticketResponseDto : ticketResponseDtoList) {
-                ticketResponseDto.setIsLike(memberTicketLikeService.getMemberTicketLike(ticketResponseDto.getId(), accessToken));
+                ticketResponseDtoList.forEach(t -> t.setIsLike(memberTicketLikeService.getMemberTicketLike(t.getId(), accessToken)));
             }
         } else {
             ticketResponseDtoList.forEach(t -> t.setIsLike(false));
@@ -188,13 +188,7 @@ public class TicketController {
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
 
         // 좋아요 여부 추가
-        if (accessToken != null) {
-            for (TicketResponseDto ticketResponseDto : ticketResponseDtoList) {
-                ticketResponseDto.setIsLike(memberTicketLikeService.getMemberTicketLike(ticketResponseDto.getId(), accessToken));
-            }
-        } else {
-            ticketResponseDtoList.forEach(t -> t.setIsLike(false));
-        }
+        ticketResponseDtoList.forEach(t -> t.setIsLike(memberTicketLikeService.getMemberTicketLike(t.getId(), accessToken)));
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 
