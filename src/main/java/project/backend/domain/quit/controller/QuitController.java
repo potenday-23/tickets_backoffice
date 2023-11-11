@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
+import project.backend.domain.jwt.service.JwtService;
+import project.backend.domain.member.service.MemberService;
 import project.backend.domain.quit.dto.QuitPatchRequestDto;
 import project.backend.domain.quit.dto.QuitPostRequestDto;
 import project.backend.domain.quit.dto.QuitResponseDto;
@@ -26,17 +28,22 @@ public class QuitController {
 
     private final QuitService quitService;
     private final QuitMapper quitMapper;
+    private final MemberService memberService;
+    private final JwtService jwtService;
 
     @ApiOperation(
             value = "탈퇴 사유 update하기",
-            notes = " - quits : [1, 2, 3]" +
+            notes = " - quits : [1, 2, 3]\n" +
+                    " - Header(Authorization) : 토큰 입력\n" +
                     " - 탈퇴 사유 목록을 조회 후, 해당 id를 list로 넣어주세요.")
     @PostMapping("/reasons")
     public ResponseEntity updateQuitReason(
-            @RequestPart(required = false) List<Long> quits) {
-        if (ObjectUtils.isEmpty(quits)){
+            @RequestPart(required = false) List<Long> quits,
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(quits)){
             throw new BusinessException(ErrorCode.MISSING_REQUEST);
         }
+        memberService.deleteMember(jwtService.getMemberFromAccessToken(accessToken).getId());
         quitService.updateQuitReason(quits);
         return ResponseEntity.status(HttpStatus.OK).body(quitMapper.quitsToQuitResponseDtos(quitService.getQuitList()));
     }
