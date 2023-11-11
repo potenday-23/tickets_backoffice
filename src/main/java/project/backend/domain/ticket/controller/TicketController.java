@@ -68,12 +68,13 @@ public class TicketController {
             @RequestPart(value = "image", required = false) MultipartFile image,
             @Valid @RequestPart(required = false) TicketPostRequestDto request) {
 
-        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(image) || ObjectUtils.isEmpty(request)){
+        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(request) || (ObjectUtils.isEmpty(image) && ObjectUtils.isEmpty(request.getImageUrl()))){
             throw new BusinessException(ErrorCode.MISSING_REQUEST);
         }
 
-        // image
-        request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
+        if (!ObjectUtils.isEmpty(image)) {
+            request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
+        }
 
         // 작성자 등록
         request.setMember(jwtService.getMemberFromAccessToken(accessToken));
@@ -219,6 +220,7 @@ public class TicketController {
         if (image != null) {
             request.setImageUrl(imageService.updateImage(image, "Ticket", "imageUrl"));
         }
+
         // Ticket 수정
         Ticket ticket = ticketService.patchTicket(ticketId, request, accessToken);
 

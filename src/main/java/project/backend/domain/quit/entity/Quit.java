@@ -34,7 +34,7 @@ public class Quit extends BaseEntity {
     // Patch
     public Quit patchQuit(QuitPatchRequestDto quitPatchRequestDto){
         this.reason = Optional.ofNullable(quitPatchRequestDto.getReason()).orElse(this.reason);
-        this.count = Optional.ofNullable(quitPatchRequestDto.getCount()).orElse(this.count);
+        this.count = (quitPatchRequestDto.getCount() != null && quitPatchRequestDto.getCount() != 0) ? quitPatchRequestDto.getCount() : this.count;
         return this;
     }
 }

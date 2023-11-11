@@ -85,11 +85,11 @@ public class Ticket extends BaseEntity {
         this.title = Optional.ofNullable(ticketPatchRequestDto.getTitle()).orElse(this.title);
         this.imageUrl = Optional.ofNullable(ticketPatchRequestDto.getImageUrl()).orElse(this.imageUrl);
         this.ticketDate = Optional.ofNullable(ticketPatchRequestDto.getTicketDate()).orElse(this.ticketDate);
-        this.rating = (rating != 0) ? ticketPatchRequestDto.getRating() : this.rating;
+        this.rating = (ticketPatchRequestDto.getRating()!= null && ticketPatchRequestDto.getRating() != 0) ? ticketPatchRequestDto.getRating() : this.rating;
         this.memo = Optional.ofNullable(ticketPatchRequestDto.getMemo()).orElse(this.memo);
         this.seat = Optional.ofNullable(ticketPatchRequestDto.getSeat()).orElse(this.seat);
         this.location = Optional.ofNullable(ticketPatchRequestDto.getLocation()).orElse(this.location);
-        this.price = (price != 0) ? ticketPatchRequestDto.getPrice() : this.price;
+        this.price = (ticketPatchRequestDto.getPrice() != null && ticketPatchRequestDto.getPrice() != 0) ? ticketPatchRequestDto.getPrice() : this.price;
         this.friend = Optional.ofNullable(ticketPatchRequestDto.getFriend()).orElse(this.friend);
         this.isPrivate = Optional.ofNullable(ticketPatchRequestDto.getIsPrivate()).orElse(this.isPrivate);
         this.color = Optional.ofNullable(ticketPatchRequestDto.getColor()).orElse(this.color);
