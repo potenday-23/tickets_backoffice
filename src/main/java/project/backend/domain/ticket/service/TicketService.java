@@ -81,6 +81,10 @@ public class TicketService {
         return ticketRepository.getTotalTicketList(categorys, getStartAndEnd(period, start, end), search);
     }
 
+    public List<Ticket> getTotalAndMyTicketList(List<String> categorys, String period, String start, String end, String search, Member member) {
+        return ticketRepository.getTotalAndMyTicketList(categorys, getStartAndEnd(period, start, end), search, member);
+    }
+
     public List<Ticket> getMyTicketList(List<String> categorys, String period, String start, String end, String search, Member member) {
         return ticketRepository.getMyTicketList(categorys, getStartAndEnd(period, start, end), search, member);
     }

@@ -9,6 +9,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import project.backend.domain.jwt.service.JwtService;
+import project.backend.domain.member.entity.Member;
 import project.backend.domain.memberTicketLike.service.MemberTicketLikeService;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
@@ -152,6 +153,51 @@ public class TicketController {
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 
+    @ApiOperation(
+            value = "둘러보기 티켓 조회 - 전체 티켓(전체 공개) & 내 티켓(전체 공개, 비공개)만 ",
+            notes = " - ?categorys=영화,뮤지컬\n" +
+                    " - &period=week    **[week, month, 6month, day로 조회 가능]**\n" +
+                    " - &start=2023-11-03\n" +
+                    " - &end=2023-11-05\n" +
+                    " - &search=레미제라블\n" +
+                    "- Header['Authorization'] : 토큰 값\n" +
+                    "1. Authorization과 categorys를 입력할 경우, 유저의 온보딩 카테고리보다 categorys로 입력한 카테고리가 필터의 우선순위를 가집니다.\n" +
+                    "2. start, end가 period보다 우선순위를 가집니다.\n" +
+                    "3. start, end 두 값을 동시에 적지 않으면 filter 기능이 동작하지 않습니다.(에러는 발생하지 않습니다.)\n" +
+                    "4. Authorization은 필수 값이고, 나머지는 모두 필수 파라미터가 아닙니다.")
+    @GetMapping("/my-total")
+    public ResponseEntity getTotalAndMyTicketList(
+            @RequestParam(value = "categorys", required = false) List<String> categorys,
+            @RequestParam(value = "period", required = false) String period, // 일주일(week), 한달(month), 6개월(6month), 하루(day)
+            @RequestParam(value = "start", required = false) String start,
+            @RequestParam(value = "end", required = false) String end,
+            @RequestParam(value = "search", required = false) String search,
+            @RequestHeader(value = "Authorization", required = false) String accessToken
+    ) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
+
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+
+        if (categorys == null) {
+            categorys = member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList());
+        }
+
+        List<Ticket> ticketList = ticketService.getTotalAndMyTicketList(categorys, period, start, end, search, member);
+        List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
+
+        // 좋아요 여부 추가
+        if (accessToken != null) {
+            for (TicketResponseDto ticketResponseDto : ticketResponseDtoList) {
+                ticketResponseDto.setIsLike(memberTicketLikeService.getMemberTicketLike(ticketResponseDto.getId(), accessToken));
+            }
+        } else {
+            ticketResponseDtoList.forEach(t -> t.setIsLike(false));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
+    }
+
     /**
      * 회원 인증 받지 않아도 조회 가능한 api
      *
@@ -181,7 +227,7 @@ public class TicketController {
             throw new BusinessException(ErrorCode.MISSING_REQUEST);
         }
 
-        List<Ticket> ticketList = ticketService.getMyTicketList(categorys, period, start, end, search == null ? "" : search, jwtService.getMemberFromAccessToken(accessToken));
+        List<Ticket> ticketList = ticketService.getMyTicketList(categorys, period, start, end, search, jwtService.getMemberFromAccessToken(accessToken));
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }

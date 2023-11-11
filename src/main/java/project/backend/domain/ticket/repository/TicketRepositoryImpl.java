@@ -1,6 +1,9 @@
 package project.backend.domain.ticket.repository;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
@@ -31,6 +34,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
 
     @Override
     public List<Ticket> getTotalTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search) {
+        search = search==null ? "": search;
         if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.isPrivate.eq(IsPrivate.PUBLIC),
@@ -54,7 +58,33 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
     }
 
     @Override
+    public List<Ticket> getTotalAndMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member) {
+        search = search==null ? "": search;
+        if (categorys == null || categorys.size() == 0) {
+            return queryFactory.selectFrom(ticket)
+                    .where(eqMember(ticket.member.id, member),
+                            ticket.title.contains(search),
+                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1))
+                    )
+                    .orderBy(ticket.ticketDate.desc())
+                    .fetch();
+        }
+
+        else {
+            return queryFactory.selectFrom(ticket)
+                    .where(eqMember(ticket.member.id, member),
+                            ticket.category.name.in(categorys),
+                            ticket.title.contains(search),
+                            ticket.ticketDate.between(startAndEndList.get(0), startAndEndList.get(1))
+                    )
+                    .orderBy(ticket.ticketDate.desc())
+                    .fetch();
+        }
+    }
+
+    @Override
     public List<Ticket> getMyTicketList(List<String> categorys, List<LocalDateTime> startAndEndList, String search, Member member) {
+        search = search==null ? "": search;
         if (categorys == null || categorys.size() == 0) {
             return queryFactory.selectFrom(ticket)
                     .where(ticket.title.contains(search),
@@ -119,4 +149,13 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
         }
         return memberStatisticsResponseDtoList;
     }
+
+    private BooleanExpression eqMember(NumberPath<Long> memberId, Member member){
+        NumberPath<Long> memberIdCompare = Expressions.numberPath(Long.class, member.getId().toString());
+        if (Objects.equals(memberIdCompare, memberId)) {
+            return null;
+        }
+        return ticket.isPrivate.eq(IsPrivate.PUBLIC);
+    }
+
 }
