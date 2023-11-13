@@ -161,11 +161,13 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
         LocalDateTime CURRENT_TIME = LocalDateTime.now();
         List<MemberYearStatisticsResponseDto> memberYearStatisticsResponseDtoList = new ArrayList<>();
 
+        // 월별 GroupBy를 위한 String Template 이용하기
         StringTemplate formattedDate = Expressions.stringTemplate(
                 "DATE_FORMAT({0}, {1})",
                 ticket.ticketDate,
                 ConstantImpl.create("%Y-%m"));
 
+        // 월별 통계가 있는 경우 Tuple[년, 월, 통계수]를 반환
         List<Tuple> ticketCountList = queryFactory.select(ticket.ticketDate.year(),ticket.ticketDate.month(), ticket.count())
                 .from(ticket)
                 .groupBy(formattedDate)
@@ -174,6 +176,7 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
                         ticket.ticketDate.between(CURRENT_TIME.minusYears(10).with(TemporalAdjusters.firstDayOfYear()), CURRENT_TIME.with(TemporalAdjusters.lastDayOfYear())))
                 .fetch();
 
+        // memberYearStatisticsResponseDtoList에 저장
         for (Tuple ticketCount: ticketCountList) {
             memberYearStatisticsResponseDtoList.add(MemberYearStatisticsResponseDto.builder()
                     .year(ticketCount.get(0, Integer.class))
