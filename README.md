@@ -1,5 +1,5 @@
 # 문화생활 티켓 아카이빙 서비스 티캣츠(Ticats)
-![로고](https://github.com/Team-Enigma23/social-media-integration-feed-project/assets/82714785/5e764a79-ba2d-4fc3-9a3e-985a5e1c2a81)
+![로고](https://github.com/potenday-23/tickets_backend/assets/82714785/583637a8-0796-4abc-949c-faea3d87e4b0)
 
 ## Table of Contents
 - [개요](#개요)
