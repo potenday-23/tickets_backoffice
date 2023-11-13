@@ -7,6 +7,7 @@ import project.backend.domain.category.service.CategoryService;
 import project.backend.domain.member.dto.MemberMyPageResponseDto;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
+import project.backend.domain.member.dto.MemberYearStatisticsResponseDto;
 import project.backend.domain.member.entity.Agree;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.member.entity.Member;
@@ -107,6 +108,10 @@ public class MemberService {
 
     public List<MemberStatisticsResponseDto> getMemberStatistics(Member member, String month) {
         return ticketRepository.getStatisticsList(member, month);
+    }
+
+    public List<MemberYearStatisticsResponseDto> getMemberYearStatistics(Member member) {
+        return ticketRepository.getYearStatisticsList(member);
     }
 
     public MemberMyPageResponseDto getMyPage(Member member) {

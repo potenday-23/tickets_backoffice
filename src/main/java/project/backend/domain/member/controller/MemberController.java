@@ -45,7 +45,7 @@ public class MemberController {
     }
 
     @ApiOperation(
-            value = "Statistics 조회",
+            value = "통계 조회",
             notes = " - Authorization 토큰 필수\n" +
                     " - month=2023-10(yyyy-mm형식)\n" )
     @GetMapping("/statistics")
@@ -57,6 +57,20 @@ public class MemberController {
         }
         Member member = jwtService.getMemberFromAccessToken(accessToken);
         List<MemberStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberStatistics(member, month);
+        return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
+    }
+
+    @ApiOperation(
+            value = "월별 통계 여부 조회",
+            notes = " - Authorization 토큰 필수")
+    @GetMapping("/year-statistics")
+    public ResponseEntity getYearStatistics(
+            @RequestHeader(value = "Authorization", required = false) String accessToken) {
+        if (ObjectUtils.isEmpty(accessToken)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
+        Member member = jwtService.getMemberFromAccessToken(accessToken);
+        List<MemberYearStatisticsResponseDto> memberStatisticsResponseDtoList = memberService.getMemberYearStatistics(member);
         return ResponseEntity.status(HttpStatus.OK).body(memberStatisticsResponseDtoList);
     }
 

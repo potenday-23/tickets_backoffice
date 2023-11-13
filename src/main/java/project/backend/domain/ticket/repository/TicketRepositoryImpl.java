@@ -1,13 +1,14 @@
 package project.backend.domain.ticket.repository;
 
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.criterion.Projections;
 import org.joda.time.DateTime;
 import project.backend.domain.member.dto.MemberStatisticsResponseDto;
+import project.backend.domain.member.dto.MemberYearStatisticsResponseDto;
 import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.QMember;
 import project.backend.domain.ticket.entity.IsPrivate;
@@ -21,9 +22,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static project.backend.domain.ticket.entity.QTicket.ticket;
 import static project.backend.domain.member.entity.QMember.member;
@@ -149,6 +154,36 @@ public class TicketRepositoryImpl implements TicketRepositoryCustom {
         }
         return memberStatisticsResponseDtoList;
     }
+
+    @Override
+    public List<MemberYearStatisticsResponseDto> getYearStatisticsList(Member member) {
+
+        LocalDateTime CURRENT_TIME = LocalDateTime.now();
+        List<MemberYearStatisticsResponseDto> memberYearStatisticsResponseDtoList = new ArrayList<>();
+
+        StringTemplate formattedDate = Expressions.stringTemplate(
+                "DATE_FORMAT({0}, {1})",
+                ticket.ticketDate,
+                ConstantImpl.create("%Y-%m"));
+
+        List<Tuple> ticketCountList = queryFactory.select(ticket.ticketDate.year(),ticket.ticketDate.month(), ticket.count())
+                .from(ticket)
+                .groupBy(formattedDate)
+                .where(
+                        ticket.member.eq(member),
+                        ticket.ticketDate.between(CURRENT_TIME.minusYears(10).with(TemporalAdjusters.firstDayOfYear()), CURRENT_TIME.with(TemporalAdjusters.lastDayOfYear())))
+                .fetch();
+
+        for (Tuple ticketCount: ticketCountList) {
+            memberYearStatisticsResponseDtoList.add(MemberYearStatisticsResponseDto.builder()
+                    .year(ticketCount.get(0, Integer.class))
+                    .month(ticketCount.get(1, Integer.class))
+                    .count(Long.valueOf(Optional.ofNullable(ticketCount.get(2, Long.class)).orElse(0L)).intValue()).build());
+        }
+
+        return memberYearStatisticsResponseDtoList;
+    }
+
 
     private BooleanExpression eqMember(NumberPath<Long> memberId, Member member){
         NumberPath<Long> memberIdCompare = Expressions.numberPath(Long.class, member.getId().toString());
