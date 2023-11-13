@@ -53,14 +53,16 @@ Ticats 어플리케이션 백엔드 Test(미구현)
 
 ## 설계
 - E-R Diargram
-![ERD Cloud](https://github.com/potenday-23/tickets_backend/assets/82714785/5b4e207d-35ef-4153-8ce5-a25844bc17cf)
+   ![ERD Cloud](https://github.com/potenday-23/tickets_backend/assets/82714785/5b4e207d-35ef-4153-8ce5-a25844bc17cf)
+
 - Architecture
-![Architecture](https://github.com/potenday-23/tickets_backend/assets/82714785/021b3e23-66bc-4724-9c31-4e550342f38d)
+
+  ![Architecture](https://github.com/potenday-23/tickets_backend/assets/82714785/021b3e23-66bc-4724-9c31-4e550342f38d)
 
 
 ## TIL 및 회고
 ### 회고
-
+- [[티캣츠] 문화생활 티켓 아카이빙 어플리케이션 1차 회고록](https://velog.io/@gabang2/%ED%8B%B0%EC%BA%A3%EC%B8%A0-%EB%AC%B8%ED%99%94%EC%83%9D%ED%99%9C-%ED%8B%B0%EC%BC%93-%EC%95%84%EC%B9%B4%EC%9D%B4%EB%B9%99-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-1%EC%B0%A8-%ED%9A%8C%EA%B3%A0%EB%A1%9D)
 ### TIL
 - [QueryDsl에서의 월별 조회를 위한 GroupBy](https://www.notion.so/gabang2/QueryDsl-3b8f3bc3ba30457b8b59371b0654df1d)
 - [LocalDateTime 클라이언트 에러 처리](https://www.notion.so/gabang2/LocalDateTime-b69aeadeb78a46349474cb395ffe1e80?pvs=25)
