@@ -51,7 +51,10 @@ public class CategoryService {
                 .clickImage(categoryPostRequestDto.getClickImage()).build();
         categoryRepository.save(category);
 
-        redisService.putListToRedis("Category::list", categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+        List<CategoryResponseDto> categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+
+        redisService.putListToRedis("Category::list", categoryResponseDtoListList);
         return category;
     }
 
@@ -60,7 +63,10 @@ public class CategoryService {
         category.patchCategory(categoryPatchRequestDto);
         categoryRepository.save(category);
 
-        redisService.putListToRedis("Category::list", categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+        List<CategoryResponseDto> categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+
+        redisService.putListToRedis("Category::list", categoryResponseDtoListList);
         return category;
     }
 
