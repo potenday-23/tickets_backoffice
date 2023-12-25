@@ -27,6 +27,9 @@ public class Category extends BaseEntity {
     @Column(name = "name", unique = true)
     public String name;
 
+    @Column(name = "num")
+    public Integer num;
+
     @Column(name = "basic_image")
     public String basicImage;
 
@@ -41,8 +44,9 @@ public class Category extends BaseEntity {
 
     // == 생성자 == //
     @Builder
-    public Category(String name, String basicImage, String clickImage) {
+    public Category(String name, Integer num, String basicImage, String clickImage) {
         this.name = name;
+        this.num = num;
         this.basicImage = basicImage;
         this.clickImage = clickImage;
     }
@@ -50,6 +54,7 @@ public class Category extends BaseEntity {
     // == 수정 == //
     public Category patchCategory(CategoryPatchRequestDto categoryPatchRequestDto) {
         this.name = Optional.ofNullable(categoryPatchRequestDto.getName()).orElse(this.name);
+        this.num = Optional.ofNullable(categoryPatchRequestDto.getNum()).orElse(this.num);
         this.basicImage = Optional.ofNullable(categoryPatchRequestDto.getBasicImage()).orElse(this.basicImage);
         this.clickImage = Optional.ofNullable(categoryPatchRequestDto.getClickImage()).orElse(this.clickImage);
         return this;

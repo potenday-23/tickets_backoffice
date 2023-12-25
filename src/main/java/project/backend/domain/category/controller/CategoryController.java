@@ -81,4 +81,13 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(categoryMapper.categoryToCategoryResponseDto(category));
     }
+
+    @DeleteMapping
+    public ResponseEntity deleteCategory(
+            @RequestParam(value = "name", required = false) String name) {
+
+        categoryService.deleteCategory(name);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
 }

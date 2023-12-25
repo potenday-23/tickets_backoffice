@@ -36,7 +36,7 @@ public class CategoryService {
 
         if (categoryResponseDtoListList == null) {
             categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
-                    categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+                    categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
 
             redisService.putListToRedis("Category::list", categoryResponseDtoListList);
         }
@@ -47,12 +47,13 @@ public class CategoryService {
     public Category createCategory(CategoryPostRequestDto categoryPostRequestDto) {
         Category category = Category.builder()
                 .name(categoryPostRequestDto.getName())
+                .num(categoryPostRequestDto.getNum())
                 .basicImage(categoryPostRequestDto.getBasicImage())
                 .clickImage(categoryPostRequestDto.getClickImage()).build();
         categoryRepository.save(category);
 
         List<CategoryResponseDto> categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
-                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
 
         redisService.putListToRedis("Category::list", categoryResponseDtoListList);
         return category;
@@ -64,7 +65,7 @@ public class CategoryService {
         categoryRepository.save(category);
 
         List<CategoryResponseDto> categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
-                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "createdDate", "id")));
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
 
         redisService.putListToRedis("Category::list", categoryResponseDtoListList);
         return category;
@@ -72,5 +73,13 @@ public class CategoryService {
 
     public Category verifiedCategory(String categoryName) {
         return categoryRepository.findFirstByName(categoryName).orElseThrow(() -> new BusinessException(ErrorCode.CATEGORY_NOT_FOUND));
+    }
+
+    public void deleteCategory(String name) {
+        categoryRepository.delete(verifiedCategory(name));
+        List<CategoryResponseDto> categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
+
+        redisService.putListToRedis("Category::list", categoryResponseDtoListList);
     }
 }
