@@ -7,8 +7,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryResponseDto {
-    public Long id;
+public class CategoryPatchRequestDto {
     public String name;
     public String basicImage;
     public String clickImage;
