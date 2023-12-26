@@ -48,7 +48,8 @@ public class RedisService {
             return null;
         } else {
             try {
-                return Arrays.asList(objectMapper.readValue(redisValue, new TypeReference<T>() {}));
+                List<T> t = objectMapper.readValue(redisValue, new TypeReference<List<T>>() {});
+                return t;
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
