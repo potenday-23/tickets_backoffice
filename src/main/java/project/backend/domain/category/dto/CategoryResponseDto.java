@@ -10,6 +10,7 @@ import lombok.*;
 public class CategoryResponseDto {
     public Long id;
     public String name;
+    public String engName;
     public String basicImage;
     public String clickImage;
 }

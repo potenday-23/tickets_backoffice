@@ -47,6 +47,7 @@ public class CategoryService {
     public Category createCategory(CategoryPostRequestDto categoryPostRequestDto) {
         Category category = Category.builder()
                 .name(categoryPostRequestDto.getName())
+                .engName(categoryPostRequestDto.getEngName())
                 .num(categoryPostRequestDto.getNum())
                 .basicImage(categoryPostRequestDto.getBasicImage())
                 .clickImage(categoryPostRequestDto.getClickImage()).build();

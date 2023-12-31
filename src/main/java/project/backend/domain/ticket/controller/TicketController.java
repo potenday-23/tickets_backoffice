@@ -223,6 +223,10 @@ public class TicketController {
 
         List<Ticket> ticketList = ticketService.getMyTicketList(categorys, period, start, end, search, jwtService.getMemberFromAccessToken(accessToken));
         List<TicketResponseDto> ticketResponseDtoList = ticketMapper.ticketsToTicketResponseDtos(ticketList);
+
+        // 좋아요 여부 추가
+        ticketResponseDtoList.forEach(t -> t.setIsLike(memberTicketLikeService.getMemberTicketLike(t.getId(), accessToken)));
+
         return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDtoList);
     }
 

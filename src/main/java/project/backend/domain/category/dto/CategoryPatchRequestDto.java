@@ -9,6 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class CategoryPatchRequestDto {
     public String name;
+    public String engName;
     public Integer num;
     public String basicImage;
     public String clickImage;
