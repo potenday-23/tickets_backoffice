@@ -1,4 +1,4 @@
-package project.backend.domain.quit.dto;
+package project.backend.domain.version.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -8,10 +8,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuitResponseDto {
+public class VersionResponseDto {
     public Long id;
-    public String reason;
-    public Integer count;
+    public String version;
     public LocalDateTime createdDate;
     public LocalDateTime updatedDate;
 }
