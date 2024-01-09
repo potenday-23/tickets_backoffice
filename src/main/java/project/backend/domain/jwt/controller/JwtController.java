@@ -10,6 +10,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.backend.domain.category.dto.CategoryResponseDto;
+import project.backend.domain.category.entity.Category;
+import project.backend.domain.category.repository.CategoryRepository;
 import project.backend.domain.category.service.CategoryService;
 import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.jwt.response.JwtResponse;
@@ -25,6 +28,9 @@ import project.backend.global.error.exception.ErrorCode;
 import project.backend.global.s3.service.ImageService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +46,7 @@ public class JwtController {
     private final JwtService jwtService;
     private final MemberMapper memberMapper;
     private final ImageService imageService;
-    private final CategoryService categoryService;
+    private final CategoryRepository categoryRepository;
 
 
     @ApiOperation(
@@ -83,10 +89,10 @@ public class JwtController {
         // 온보딩 카테고리 설정
         if (categorys != null) {
             categorys = categorys.stream().distinct().collect(Collectors.toList());
-            memberService.onboardingMember(member.id, categorys);
         } else {
-            categorys = categoryService.getCategoryList().stream().map(categoryResponseDto -> categoryResponseDto.name).collect(Collectors.toList());
+            categorys = categoryRepository.findAll().stream().map(Category::getName).collect(Collectors.toList());
         }
+        memberService.onboardingMember(member.id, categorys);
 
         // accessToken과 refreshToken 발급
         String accessToken = jwtService.getAccessToken(member);
