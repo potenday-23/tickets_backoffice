@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.backend.domain.category.service.CategoryService;
 import project.backend.domain.jwt.dto.JwtRequestDto;
 import project.backend.domain.jwt.response.JwtResponse;
 import project.backend.domain.jwt.response.TokenResponse;
@@ -39,6 +40,7 @@ public class JwtController {
     private final JwtService jwtService;
     private final MemberMapper memberMapper;
     private final ImageService imageService;
+    private final CategoryService categoryService;
 
 
     @ApiOperation(
@@ -82,6 +84,8 @@ public class JwtController {
         if (categorys != null) {
             categorys = categorys.stream().distinct().collect(Collectors.toList());
             memberService.onboardingMember(member.id, categorys);
+        } else {
+            categorys = categoryService.getCategoryList().stream().map(categoryResponseDto -> categoryResponseDto.name).collect(Collectors.toList());
         }
 
         // accessToken과 refreshToken 발급

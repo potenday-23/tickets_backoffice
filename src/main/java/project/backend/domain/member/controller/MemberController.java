@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import project.backend.domain.category.service.CategoryService;
 import project.backend.domain.jwt.service.JwtService;
 import project.backend.domain.member.dto.*;
 import project.backend.domain.member.entity.Member;
@@ -35,6 +36,7 @@ public class MemberController {
     private final JwtService jwtService;
     private final ImageService imageService;
     private final LogoutTokenService logoutTokenService;
+    private final CategoryService categoryService;
 
     @GetMapping("/{memberId}") // todo : 관리자 권한 있어야 실행 가능한 것으로 바꾸기
     public ResponseEntity getMember(
@@ -161,6 +163,8 @@ public class MemberController {
         if (categorys != null) {
             categorys = categorys.stream().distinct().collect(Collectors.toList());
             memberService.onboardingMember(member.id, categorys);
+        } else {
+            categorys = categoryService.getCategoryList().stream().map(categoryResponseDto -> categoryResponseDto.name).collect(Collectors.toList());
         }
         MemberResponseDto memberResponseDto = memberMapper.memberToMemberResponseDto(memberService.patchMember(member.getId(), request));
         memberResponseDto.setCategorys(member.getOnboardingMemberCategories().stream().map(c -> c.getCategory().getName()).collect(Collectors.toList()));
