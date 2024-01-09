@@ -19,6 +19,7 @@ import project.backend.domain.ticket.repository.TicketRepository;
 import project.backend.global.error.exception.BusinessException;
 import project.backend.global.error.exception.ErrorCode;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,7 +93,17 @@ public class MemberService {
     }
 
     public Member patchMember(Long id, MemberPatchRequestDto memberPatchRequestDto) {
-        Member member = verifiedMember(id).patchMember(memberPatchRequestDto);
+        Member member = verifiedMember(id);
+        Boolean isNicknameChange = !(memberPatchRequestDto.getNickname() == null);
+        Boolean isNotOneMonthBefore = member.getNicknameChangeDate() != null ? !member.getNicknameChangeDate().isBefore(LocalDateTime.now().minusMonths(1)) : false;
+
+        if (isNicknameChange) {
+            if (isNotOneMonthBefore) {
+                throw new BusinessException(ErrorCode.MEMBER_NICKNAME_CHANGE_MONTH);
+            }
+            member.nicknameChangeDate = LocalDateTime.now();
+        }
+        member.patchMember(memberPatchRequestDto);
         memberRepository.save(member);
         return member;
     }

@@ -11,6 +11,7 @@ import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,8 @@ public class Member extends BaseEntity {
     public String socialId;
 
     public String nickname;
+
+    public LocalDateTime nicknameChangeDate;
 
     public String profileUrl;
 

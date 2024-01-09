@@ -27,6 +27,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(400, "M006", "사용자를 찾을 수 없습니다."),
     NICKNAME_DUPLICATE(400, "M007", "닉네임이 중복되었습니다."),
     MEMBER_LOGOUT(400, "M008", "이미 로그아웃한 유저입니다."),
+    MEMBER_NICKNAME_CHANGE_MONTH(400, "M009", "한 달에 한 번만 닉네임을 변경할 수 있습니다."),
 
     // Ticket
     TICKET_NOT_FOUND(400, "T001", "티켓을 찾을 수 없습니다."),
