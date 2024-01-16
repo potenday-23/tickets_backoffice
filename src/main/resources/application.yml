@@ -16,6 +16,19 @@ spring:
     username: ${TICKETS_DB_USER}
     password: ${TICKETS_DB_PW}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ticats1020@gmail.com
+    password: vbns efnd jleo xafb
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   jpa:
     database: mysql
     show-sql: false
