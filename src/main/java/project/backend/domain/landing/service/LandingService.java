@@ -31,8 +31,8 @@ public class LandingService {
         Landing landing = Landing.builder().email(landingPostRequestDto.getEmail()).build();
         landingRepository.save(landing);
         String emailTo = landing.getEmail();
-        String subject = "티캣츠 사전 예약 해주셔서 감사합니다!";
-        String text = "<div style=\"width:100px;height:100px;background:pink;\"><div>";
+        String subject = "티캣츠 사전예약을 진심으로 감사드립니다.";
+        String text = "<img style=\"width: 200px; margin-bottom: 50px\" src=\"https://potenday-23.github.io/ticats-landing/images/ticats-TWk.png\"><br>안녕하세요 티캣츠입니다<br>티캣츠 서비스에 관심을 가져주셔서 감사합니다.<br>서비스가 출시되면 메일로 알려드리겠습니다.<br>항상 노력하는 티캣츠가 되겠습니다. 감사합니다.<br></div>";
         try {
             sendEmailWithAttachment(emailTo, subject, text);
         } catch (MessagingException e) {
