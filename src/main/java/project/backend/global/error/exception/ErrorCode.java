@@ -41,7 +41,7 @@ public enum ErrorCode {
     // Notice
     NOTICE_NOT_FOUND(400, "N001", "공지를 찾을 수 없습니다."),
 
-    // Landing
+    // Traffic
     VERSION_NOT_FOUND(400, "V001", "버전을 찾을 수 없습니다.")
 
 

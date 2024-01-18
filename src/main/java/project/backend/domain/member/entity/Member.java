@@ -9,6 +9,7 @@ import project.backend.domain.common.entity.BaseEntity;
 import project.backend.domain.onboardingmembercategory.entity.OnboardingMemberCategory;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.member.dto.MemberPatchRequestDto;
+import project.backend.domain.traffic.entity.Traffic;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -52,6 +53,9 @@ public class Member extends BaseEntity {
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     public List<OnboardingMemberCategory> onboardingMemberCategories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Traffic> traffics = new ArrayList<>();
 
     @Builder
     public Member(SocialType socialType, String socialId, String nickname, String profileUrl, String refreshToken, Agree marketingAgree, Agree pushAgree){
