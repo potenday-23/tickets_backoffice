@@ -9,6 +9,7 @@ import project.backend.domain.member.entity.Member;
 import project.backend.domain.member.entity.SocialType;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
+import project.backend.domain.ticket.dto.TicketStatusPostRequestDto;
 import project.backend.domain.ticket.entity.IsPrivate;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
@@ -137,6 +138,16 @@ public class TicketService {
             startAndEndList.add(LocalDate.now().atTime(LocalTime.MAX));
         }
         return startAndEndList;
+    }
+
+    public Ticket postTicketStatus (Long id, Member member, TicketStatusPostRequestDto ticketStatusPostRequestDto) {
+        Ticket ticket = verifiedTicket(id);
+
+        if (ticket.getMember() == member) {
+            ticket.patchTicket((TicketPatchRequestDto.builder().isPrivate(ticketStatusPostRequestDto.getIsPrivate()).build()));
+        }
+
+        return ticket;
     }
 
 }

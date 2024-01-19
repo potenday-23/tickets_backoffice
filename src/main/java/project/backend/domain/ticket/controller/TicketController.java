@@ -13,6 +13,7 @@ import project.backend.domain.member.entity.Member;
 import project.backend.domain.memberTicketLike.service.MemberTicketLikeService;
 import project.backend.domain.ticket.dto.TicketPatchRequestDto;
 import project.backend.domain.ticket.dto.TicketPostRequestDto;
+import project.backend.domain.ticket.dto.TicketStatusPostRequestDto;
 import project.backend.domain.ticket.entity.Ticket;
 import project.backend.domain.ticket.mapper.TicketMapper;
 import project.backend.domain.ticket.service.TicketService;
@@ -294,5 +295,22 @@ public class TicketController {
 
         ticketService.deleteTicket(ticketId, jwtService.getMemberFromAccessToken(accessToken));
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @ApiOperation(
+            value = "티켓 나만보기 <-> 전체보기",
+            notes = "Header의 Authorization 필수")
+    @PostMapping("/{ticketId}/status")
+    public ResponseEntity postTicketStatus(
+            @RequestHeader(value = "Authorization", required = false) String accessToken,
+            @RequestBody TicketStatusPostRequestDto ticketStatusPostRequestDto,
+            @PathVariable(required = false) Long ticketId) {
+        if (ObjectUtils.isEmpty(accessToken) || ObjectUtils.isEmpty(ticketId) || ObjectUtils.isEmpty(ticketStatusPostRequestDto)){
+            throw new BusinessException(ErrorCode.MISSING_REQUEST);
+        }
+
+        Ticket ticket = ticketService.postTicketStatus(ticketId, jwtService.getMemberFromAccessToken(accessToken), ticketStatusPostRequestDto);
+        TicketResponseDto ticketResponseDto = ticketMapper.ticketToTicketResponseDto(ticket);
+        return ResponseEntity.status(HttpStatus.OK).body(ticketResponseDto);
     }
 }
