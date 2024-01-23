@@ -31,17 +31,8 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
 
     public List<CategoryResponseDto> getCategoryList() {
-
-        List<CategoryResponseDto> categoryResponseDtoListList = redisService.getRedisValueToList("Category::list", CategoryResponseDto.class);
-
-        if (categoryResponseDtoListList == null) {
-            categoryResponseDtoListList = categoryMapper.categorysToCategoryResponseDtos(
-                    categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
-
-            redisService.putListToRedis("Category::list", categoryResponseDtoListList);
-        }
-
-        return categoryResponseDtoListList;
+        return categoryMapper.categorysToCategoryResponseDtos(
+                categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "num", "id")));
     }
 
     public Category createCategory(CategoryPostRequestDto categoryPostRequestDto) {
