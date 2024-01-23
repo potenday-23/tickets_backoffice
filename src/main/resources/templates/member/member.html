@@ -27,6 +27,7 @@
             <th>마케팅 동의</th>
             <th>푸쉬 동의</th>
             <th>가입일자</th>
+            <th>티켓 생성 수</th>
             <th></th>
         </tr>
         </thead>
@@ -39,6 +40,7 @@
             <td th:text="${member.marketingAgree}"></td>
             <td th:text="${member.pushAgree}"></td>
             <td th:text="${member.createdDate}"></td>
+            <td th:text="${member.tickets.size()}"></td>
         </tr>
         </tbody>
     </table>
